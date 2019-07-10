@@ -169,8 +169,31 @@ def get_proper_value(value, obj, key, custom_unit=None):
     else:
         raise NotImplementedError
 
-#--------------------------------------------------------------------------------------------------------------------------------
-def write_data_dict(data_dict, section, out_parser, user_format):
+#------------------------------------------------------------------------------
+
+
+def set_ac_data(data_dict, obj, has_custom_units):
+    for attr_path, attr_val in data_dict.iteritems():
+        if hasattr(attr_val, "__dict__"):
+            sub_attr = getattr(obj, attr_path)
+            set_ac_data(attr_val, sub_attr, has_custom_units)
+        else:
+            data_line = attr_val.rsplit(None, 1)
+            value_sequence = [data_line[0]]
+            custom_unit = None
+            if has_custom_units:
+                custom_unit = data_line[-1]
+            if value_sequence[0][0] == '[':
+                value_sequence = data_line[0][1:-1].replace(",", "").split()
+            attr_val = []
+            for v in value_sequence:
+                v = get_proper_value(v, obj, attr_path, custom_unit)
+                attr_val.append(v)
+            if len(attr_val) is 1:
+                attr_val = attr_val[0]
+            else:
+                attr_val = tuple(attr_val)
+            setattr(obj, attr_path, attr_val)
 
     for key in sorted(data_dict.keys()):
         value = data_dict[key]
