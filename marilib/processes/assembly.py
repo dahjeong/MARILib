@@ -8,8 +8,8 @@ Created on Thu Jan 24 23:22:21 2019
 Changed name from "design.py" to "assembly.py" on 21:05:2019
 """
 
-import numpy as np
-from scipy.optimize import fsolve,minimize,SR1, NonlinearConstraint,BFGS
+from marilib import numpy
+from scipy.optimize import fsolve, minimize, SR1, NonlinearConstraint, BFGS
 from marilib.tools import units as unit
 
 from marilib.earth import environment as earth
@@ -223,8 +223,8 @@ def eval_tail_statistical_sizing(aircraft):
         airframe.eval_vtp_statistical_sizing(ac)
         airframe.eval_htp_statistical_sizing(ac)
 
-        y_out = np.array([x_in[0] - ac.horizontal_tail.area,
-                          x_in[1] - ac.vertical_tail.area])
+        y_out = numpy.array([x_in[0] - ac.horizontal_tail.area,
+                             x_in[1] - ac.vertical_tail.area])
 
         return y_out
     #-----------------------------------------------------------------------------------------------------------
@@ -232,7 +232,7 @@ def eval_tail_statistical_sizing(aircraft):
     htp_area_i = init.htp_area(aircraft.wing.area)
     vtp_area_i = init.vtp_area(aircraft.wing.area)
 
-    x_ini = np.array([htp_area_i,vtp_area_i])
+    x_ini = numpy.array([htp_area_i, vtp_area_i])
 
     fct_arg = aircraft
 
@@ -276,13 +276,14 @@ def eval_aircraft_pre_design(aircraft):
 
         propulsion.eval_propulsion_design(ac)
 
-        y_out = np.array([x_in[0] - ac.turbofan_nacelle.width,
-                          x_in[1] - ac.turbofan_nacelle.y_ext])
+        y_out = numpy.array([x_in[0] - ac.turbofan_nacelle.width,
+                             x_in[1] - ac.turbofan_nacelle.y_ext])
 
         return y_out
     #-----------------------------------------------------------------------------------------------------------
 
-    x_ini = np.array([aircraft.turbofan_nacelle.width,aircraft.turbofan_nacelle.y_ext])
+    x_ini = numpy.array(
+        [aircraft.turbofan_nacelle.width, aircraft.turbofan_nacelle.y_ext])
 
     fct_arg = aircraft
 
@@ -324,8 +325,8 @@ def eval_aircraft_statistical_pre_design(aircraft):
         airframe.eval_vtp_statistical_sizing(ac)
         airframe.eval_htp_statistical_sizing(ac)
 
-        y_out = np.array([x_in[0] - ac.horizontal_tail.area,
-                          x_in[1] - ac.vertical_tail.area])
+        y_out = numpy.array([x_in[0] - ac.horizontal_tail.area,
+                             x_in[1] - ac.vertical_tail.area])
 
         return y_out
     #-----------------------------------------------------------------------------------------------------------
@@ -380,7 +381,8 @@ def eval_aircraft_statistical_pre_design_2(aircraft):
         return y_out
     #-----------------------------------------------------------------------------------------------------------
 
-    x_ini = np.array([aircraft.turbofan_nacelle.width,aircraft.turbofan_nacelle.y_ext])
+    x_ini = numpy.array(
+        [aircraft.turbofan_nacelle.width, aircraft.turbofan_nacelle.y_ext])
 
     fct_arg = aircraft
 
@@ -442,14 +444,14 @@ def eval_mass_estimation(aircraft):
 
         eval_mass_breakdown(aircraft)
 
-        y_out = np.array([aircraft.weights.mass_constraint_1,
-                          aircraft.weights.mass_constraint_2])
+        y_out = numpy.array([aircraft.weights.mass_constraint_1,
+                             aircraft.weights.mass_constraint_2])
 
         return y_out
     #-----------------------------------------------------------------------------------------------------------
 
-    x_ini = np.array([aircraft.weights.mlw,
-                      aircraft.weights.mzfw])
+    x_ini = numpy.array([aircraft.weights.mlw,
+                         aircraft.weights.mzfw])
 
     fct_arg = aircraft
 
@@ -486,16 +488,16 @@ def eval_mass_mission_adaptation(aircraft):
         #------------------------------------------------------------------------------------------------------
         sub_proc.eval_nominal_mission(aircraft)
 
-        y_out = np.array([aircraft.weights.mass_constraint_1,
-                          aircraft.weights.mass_constraint_2,
-                          aircraft.weights.mass_constraint_3])
+        y_out = numpy.array([aircraft.weights.mass_constraint_1,
+                             aircraft.weights.mass_constraint_2,
+                             aircraft.weights.mass_constraint_3])
 
         return y_out
     #-----------------------------------------------------------------------------------------------------------
 
-    x_ini = np.array([aircraft.weights.mtow,
-                      aircraft.weights.mlw,
-                      aircraft.weights.mzfw])
+    x_ini = numpy.array([aircraft.weights.mtow,
+                         aircraft.weights.mlw,
+                         aircraft.weights.mzfw])
 
     fct_arg = aircraft
 
@@ -729,15 +731,15 @@ def eval_hq0(aircraft):
         eval_performance_analysis(aircraft)
         eval_handling_quality_analysis(aircraft)
 
-        y_out = np.array([c_g.cg_constraint_1,
-                          c_g.cg_constraint_2,
-                          c_g.cg_constraint_3])
+        y_out = numpy.array([c_g.cg_constraint_1,
+                             c_g.cg_constraint_2,
+                             c_g.cg_constraint_3])
         return y_out
     #-----------------------------------------------------------------------------------------------------------
 
-    x_ini = np.array([aircraft.wing.x_root,
-                      aircraft.horizontal_tail.area,
-                      aircraft.vertical_tail.area])
+    x_ini = numpy.array([aircraft.wing.x_root,
+                         aircraft.horizontal_tail.area,
+                         aircraft.vertical_tail.area])
 
     fct_arg = aircraft
 
@@ -826,15 +828,15 @@ def eval_mda3(aircraft):
         eval_performance_analysis(aircraft)
         eval_handling_quality_analysis(aircraft)
 
-        y_out = np.array([c_g.cg_constraint_1,
-                          c_g.cg_constraint_2,
-                          c_g.cg_constraint_3])
+        y_out = numpy.array([c_g.cg_constraint_1,
+                             c_g.cg_constraint_2,
+                             c_g.cg_constraint_3])
         return y_out
     #-----------------------------------------------------------------------------------------------------------
 
-    x_ini = np.array([aircraft.wing.x_root,
-                      aircraft.horizontal_tail.area,
-                      aircraft.vertical_tail.area])
+    x_ini = numpy.array([aircraft.wing.x_root,
+                         aircraft.horizontal_tail.area,
+                         aircraft.vertical_tail.area])
 
     fct_arg = aircraft
 
@@ -887,8 +889,8 @@ def eval_optim_data(x_in,ac,crit_index,crit_ref,mda_type):
         raise Exception("Type of MDA not allowed")
 
     # Constraints are violated if negative
-    #------------------------------------------------------------------------------------------------------
-    cst = np.zeros(6)
+    #-------------------------------------------------------------------------
+    cst = numpy.zeros(6)
 
     cst[0] = ac.high_speed.perfo_constraint_1
     cst[1] = ac.high_speed.perfo_constraint_2
@@ -903,8 +905,8 @@ def eval_optim_data(x_in,ac,crit_index,crit_ref,mda_type):
 #    cst /= omag
 
     # All criteria have to be minimized
-    #------------------------------------------------------------------------------------------------------
-    crt = np.zeros(5)
+    #-------------------------------------------------------------------------
+    crt = numpy.zeros(5)
 
     crt[0] = ac.weights.mtow
     crt[1] = ac.cost_mission.block_fuel
@@ -975,11 +977,11 @@ def mdf_process(aircraft,search_domain,criterion,mda_type):
 
     crit_ref,cst_ref = eval_optim_data(start_value,aircraft,crit_index,1.,mda_type)
 
-    res = minimize(eval_optim_crt, start_value, args=(aircraft,crit_index,crit_ref,mda_type,), method="trust-constr",
+    res = minimize(eval_optim_crt, start_value, args=(aircraft, crit_index, crit_ref, mda_type,), method="trust-constr",
                    jac="3-point", hess=SR1(), hessp=None, bounds=search_domain, tol=1e-5,
-                   constraints=NonlinearConstraint(fun=lambda x:eval_optim_cst(x,aircraft,crit_index,crit_ref,mda_type),
-                                                   lb=0., ub=np.inf, jac='3-point'),
-                   options={'maxiter':500,'gtol': 1e-13})
+                   constraints=NonlinearConstraint(fun=lambda x: eval_optim_cst(x, aircraft, crit_index, crit_ref, mda_type),
+                                                   lb=0., ub=numpy.inf, jac='3-point'),
+                   options={'maxiter': 500, 'gtol': 1e-13})
     #              tol=None, callback=None,
     #              options={'grad': None, 'xtol': 1e-08, 'gtol': 1e-08, 'barrier_tol': 1e-08,
     #                       'sparse_jacobian': None, 'maxiter': 1000, 'verbose': 0,
@@ -1040,8 +1042,8 @@ def plot_mdf_process(aircraft,search_domain,criterion):
             out=[0,0,0,0,0,0]
         return out
 
-    pmot=np.linspace(search_domain[0][0],search_domain[0][1],21)
-    sref=np.linspace(search_domain[1][0],search_domain[1][1],21)
+    pmot = numpy.linspace(search_domain[0][0], search_domain[0][1], 21)
+    sref = numpy.linspace(search_domain[1][0], search_domain[1][1], 21)
 
     func_vals1=[obj_catch([pmoti,sref[10]]) for pmoti in pmot]
     func_vals2=[obj_catch([pmot[10],srefi]) for srefi in sref]

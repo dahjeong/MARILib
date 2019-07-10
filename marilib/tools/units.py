@@ -7,9 +7,7 @@ Created on Thu Jan 24 23:22:21 2019
          PETEILH Nicolas : portage to Python
 """
 
-import numpy
-      
-def s_min(min): return min*60.   # Translate minutes into seconds
+from marilib import numpy
 
 def min_s(s): return s/60.   # Translate seconds into minutes
 
@@ -57,7 +55,7 @@ def smart_round(X,S):
 
 #=========================================================================================================================================
 def user_format(value):
-    from numpy import max, ceil, log10, floor, float64, arange
+    from marilib.numpy import max, ceil, log10, floor, float64, arange
 
     if isinstance(value, tuple):
         lst = list(value)

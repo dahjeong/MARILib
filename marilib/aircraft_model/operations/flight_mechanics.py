@@ -7,7 +7,7 @@ Created on Thu Jan 24 23:22:21 2019
          PETEILH Nicolas : portage to Python
 """
 
-import numpy
+from marilib import numpy
 from scipy.optimize import fsolve
 from marilib.tools.math import maximize_1d
 

@@ -8,7 +8,8 @@ Created on Thu Jan 24 23:22:21 2019
 """
 
 
-import numpy
+from numpy import extract
+from marilib import numpy
 from marilib.tools.math import maximize_1d, trinome, vander3
 from marilib.tools import units as unit
 
