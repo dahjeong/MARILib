@@ -134,6 +134,40 @@ class Aircraft(object):
         return get_ordered_data_dict(self, "Aircraft", OrderedDict())
 
 
+#------------------------------------------------------------------------------
+
+
+def get_proper_value(value, obj, key, custom_unit=None):
+    is_negative = False
+    isnumber = False
+    if isinstance(value, str):
+        if value[0] is '-':
+            value = value.replace('-', '', 1)
+            is_negative = True
+        if value.isdigit():  # check int
+            value = int(value)
+            if is_negative:
+                value *= -1
+            isnumber = True
+        elif value.replace('.', '', 1).isdigit():  # check float
+            value = float(value)
+            if is_negative:
+                value *= -1
+            isnumber = True
+        elif value == "None":
+            return None
+        else:
+            return value
+    if isnumber:
+        if custom_unit is None:
+            if "info" in obj.__dict__:
+                value_unit = obj.info[key]['unit']
+            else:
+                return value
+        correct_value = unit.convert_from(value_unit, value)
+        return correct_value
+    else:
+        raise NotImplementedError
 
 #--------------------------------------------------------------------------------------------------------------------------------
 def write_data_dict(data_dict, section, out_parser, user_format):
