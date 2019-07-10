@@ -416,35 +416,36 @@ UNIT["$/kg"] = 1.
 
 # dim = "BatteryEnergyCost"
 UNIT["$/kWh"] = 1. / UNIT['kWh']
+
 # dim = "nodimension"
-UNIT["sd"] = 1.
-UNIT["no_dim"] = 1.
+UNIT["sd"] = 1
+UNIT["no_dim"] = 1
 UNIT["%"] = 0.01
 UNIT["%/%"] = 1.
 
 # dim = "integer"
-UNIT["integer"] = 1.
-UNIT["int"] = 1.
-UNIT["entier"] = 1.
-UNIT["numeric"] = 1.
+UNIT["integer"] = 1
+UNIT["int"] = 1
+UNIT["entier"] = 1
+UNIT["numeric"] = 1
 
 # dim = "variouscounts"
-UNIT["aircraft"] = 1.
-UNIT["engine"] = 1.
-UNIT["pilot"] = 1.
-UNIT["attendant"] = 1.
-UNIT["trolley"] = 1.
-UNIT["toilet"] = 1.
-UNIT["seat"] = 1.
-UNIT["door"] = 1.
-UNIT["wheel"] = 1.
+UNIT["aircraft"] = 1
+UNIT["engine"] = 1
+UNIT["pilot"] = 1
+UNIT["attendant"] = 1
+UNIT["trolley"] = 1
+UNIT["toilet"] = 1
+UNIT["seat"] = 1
+UNIT["door"] = 1
+UNIT["wheel"] = 1
 
 # dim = "string"
-UNIT["string"] = 1.
-UNIT["text"] = 1.
+UNIT["string"] = 1
+UNIT["text"] = 1
 
 # dim = "textdate"
-UNIT["text_date"] = 1.
+UNIT["text_date"] = 1
 
 # dim = "GlobalWarmingEnergy"
 UNIT["W/m2/km/year"] = 1.
