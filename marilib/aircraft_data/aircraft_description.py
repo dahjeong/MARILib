@@ -43,7 +43,8 @@ class Aircraft(object):
     """
     Assembling all aircraft data branches
     """
-    def __init__(self, name = None):
+
+    def __init__(self, name=None):
         """
             Data structure branches, no ramification
         """
