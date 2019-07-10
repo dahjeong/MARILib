@@ -291,10 +291,49 @@ def write_ordered_data_dict(data_dict, out_parser,
                             write_detail)
 
 #-------------------------------------------------------------------------
-            else:
-                out_parser[key] = value
 
-#--------------------------------------------------------------------------------------------------------------------------------
+
+def isNaN(num):
+    return num != num
+
+
+def convert_to_orig_type(lst, orig_seq):
+
+    if isinstance(orig_seq, tuple):
+        return tuple(lst)
+    elif isinstance(orig_seq, ndarray):
+        return array(lst)
+    else:
+        return lst
+
+
+#-------------------------------------------------------------------------
+def to_user_format(value, dec_format):
+
+    if isNaN(value):
+        return value
+    elif isinstance(value, (tuple, list, ndarray)):
+        lst = list(value)
+        for i in arange(len(lst)):
+            lst[i] = to_user_format(lst[i], dec_format)
+        return str(convert_to_orig_type(lst, value)).replace("'", "")
+    elif isinstance(value, (float, float64)):
+        if value == 0. or value == -0.:
+            return format(value, "".join((".", str(dec_format), "f")))
+        else:
+            V = abs(value)
+            if abs(value) > 1:
+                correction_factor = 1e-4  # to correct 10^n values format
+                nb_dec = int(
+                    max((0, (dec_format + 1) - ceil(log10(V + correction_factor)))))
+            else:
+                nb_dec = int((dec_format - 1) - floor(log10(V)))
+            return format(value, "".join((".", str(nb_dec), "f")))
+    else:
+        return value
+
+
+#-------------------------------------------------------------------------
 def is_basetype(obj):
 
     if obj is None or not hasattr(obj, "__dict__"):
