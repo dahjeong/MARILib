@@ -156,47 +156,52 @@ def criteria(aircraft):
     return
 
 
+#-------------------------------------------------------------------------
 
-# Initialize aircraft data structure
-#---------------------------------------------------------------------------
-aircraft = Aircraft()
+if __name__ == "__main__":
+    # Initialize aircraft data structure
+    #-------------------------------------------------------------------------
+    aircraft = Aircraft()
 
-n_pax_ref = 150                     # Reference number of passengers
-design_range = unit.m_NM(3000)      # Design range
-cruise_mach = 0.78                  # Nominal cruise mach number
+    n_pax_ref = 150                     # Reference number of passengers
+    design_range = unit.m_NM(3000)      # Design range
+    cruise_mach = 0.78                  # Nominal cruise mach number
 
-propu_config = 1    # 1: turbofan, 2: partial turbo electric
-n_engine = 2        # Number of engine
+    propu_config = 1    # 1: turbofan, 2: partial turbo electric
+    n_engine = 2        # Number of engine
 
-aircraft_initialization(aircraft, n_pax_ref, design_range, cruise_mach, propu_config, n_engine)
+    aircraft_initialization(aircraft,
+                            n_pax_ref,
+                            design_range,
+                            cruise_mach,
+                            propu_config,
+                            n_engine)
 
-#---------------------------------------------------------------------------
-# Setting HQ optimization mode
-aircraft.center_of_gravity.cg_range_optimization = 1
-#---------------------------------------------------------------------------
+    #-------------------------------------------------------------------------
+    # Setting HQ optimization mode
+    aircraft.center_of_gravity.cg_range_optimization = 1
+    #-------------------------------------------------------------------------
 
-fuselage_design(aircraft)
+    fuselage_design(aircraft)
 
-lifting_plane_design(aircraft)
+    lifting_plane_design(aircraft)
 
-propulsion(aircraft)
+    propulsion(aircraft)
 
-geometry_coupling(aircraft)
+    geometry_coupling(aircraft)
 
-aircraft_aerodynamics(aircraft)
+    aircraft_aerodynamics(aircraft)
 
-aircraft_mass(aircraft)
+    aircraft_mass(aircraft)
 
-mass_coupling(aircraft)
+    mass_coupling(aircraft)
 
-handling_quality_analysis(aircraft)
+    handling_quality_analysis(aircraft)
 
-nominal_mission(aircraft)
+    nominal_mission(aircraft)
 
-mission_coupling(aircraft)
+    mission_coupling(aircraft)
 
-performance_analysis(aircraft)
+    performance_analysis(aircraft)
 
-criteria(aircraft)
-
-
+    criteria(aircraft)

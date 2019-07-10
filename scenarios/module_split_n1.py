@@ -130,51 +130,60 @@ def economics(aircraft):
     eval_cost_mission(aircraft)
     eval_economics(aircraft)
 
+#-------------------------------------------------------------------------
 #-----------------------------------------------------------------------------------------------------------
 def payload_range_analysis(aircraft):
     eval_payload_range_analysis(aircraft)
 
 
-# Initialize aircraft data structure
-#---------------------------------------------------------------------------
-aircraft = Aircraft()
+def payload_range_analysis(aircraft):
+    eval_payload_range_analysis(aircraft)
 
-n_pax_ref = 150                     # Reference number of passengers
-design_range = unit.m_NM(3000)      # Design range
-cruise_mach = 0.78                  # Nominal cruise mach number
+#-------------------------------------------------------------------------
 
-propu_config = 1    # 1: turbofan, 2: partial turbo electric
-n_engine = 2        # Number of engine
+if __name__ == "__main__":
+    # Initialize aircraft data structure
+    #-------------------------------------------------------------------------
+    aircraft = Aircraft()
 
+    n_pax_ref = 150                     # Reference number of passengers
+    design_range = unit.m_NM(3000)      # Design range
+    cruise_mach = 0.78                  # Nominal cruise mach number
 
-aircraft_initialization(aircraft, n_pax_ref, design_range, cruise_mach, propu_config, n_engine)
+    propu_config = 1    # 1: turbofan, 2: partial turbo electric
+    n_engine = 2        # Number of engine
 
-fuselage_design(aircraft)
+    aircraft_initialization(aircraft,
+                            n_pax_ref,
+                            design_range,
+                            cruise_mach,
+                            propu_config,
+                            n_engine)
 
-lifting_plane_design(aircraft)
+    fuselage_design(aircraft)
 
-propulsion(aircraft)
+    lifting_plane_design(aircraft)
 
-geometry_coupling(aircraft)
+    propulsion(aircraft)
 
-aircraft_aerodynamics(aircraft)
+    geometry_coupling(aircraft)
 
-aircraft_mass(aircraft)
+    aircraft_aerodynamics(aircraft)
 
-mass_coupling(aircraft)
+    aircraft_mass(aircraft)
 
-nominal_mission(aircraft)
+    mass_coupling(aircraft)
 
-mission_coupling(aircraft)
+    nominal_mission(aircraft)
 
-climb_performances(aircraft)
+    mission_coupling(aircraft)
 
-low_speed_performances(aircraft)
+    climb_performances(aircraft)
 
-co2_metric(aircraft)
+    low_speed_performances(aircraft)
 
-economics(aircraft)
+    co2_metric(aircraft)
 
-payload_range_analysis(aircraft)
+    economics(aircraft)
 
-
+    payload_range_analysis(aircraft)
