@@ -34,8 +34,11 @@ from marilib.airplane.propulsion.turbofan.turbofan_data \
 from marilib.airplane.propulsion.hybrid_pte1.hybrid_pte1_data \
     import PowerElectricChain, Battery, ElectricNacelle, ElectricEngine
 
+STANDARD_FORMAT = 4
 
-#--------------------------------------------------------------------------------------------------------------------------------
+#-------------------------------------------------------------------------
+
+
 class Aircraft(object):
     """
     Assembling all aircraft data branches
