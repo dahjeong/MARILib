@@ -90,28 +90,42 @@ class Aircraft(object):
         in_parser = ConfigObj(filename, indent_type="    ")
         data_dict = in_parser["Aircraft"]
         set_ac_data(data_dict, self, has_custom_units)
+
+    def export_to_file(self, filename="Aircraft.ini", def_order=True,
+                       user_format=STANDARD_FORMAT, write_unit=False,
+                       write_om=False, write_detail=False):
         """
         Build  ini file :
             Data tree file
-            "out_file_path: File path - default value "Aircraft.ini"
-            "def_order: parameters' order - default value True for class definition order
+            :param filename: Output file path - default value "Aircraft.ini"
+            :param def_order: parameters' order - default value True for class definition order
                                                   alternative value False for alphabetical order
+            :param user_format: parameters' value format - default value True or 4 for 4 decimals format
+                                                           disable option with False or -1
+            :param write_unit: Boolean to write the unit after the variable's value - default value False
+            :param write_om: Boolean to write the order of magnitude as a inline comment - default value False
+            :param write_detail: Boolean to write the varaible's description as a inline comment - default value False
         """
-        from configobj import ConfigObj
 
         out_parser = ConfigObj(indent_type="    ")
-        out_parser.filename = file
+        out_parser.filename = filename
 
-        if def_order: # class definition order
+        if def_order:  # class definition order
             data_dict = self.get_ordered_data_dict()
-            write_ordered_data_dict(data_dict, 'Aircraft', out_parser, user_format)
+            write_ordered_data_dict(data_dict, out_parser,
+                                    user_format, None, write_unit, write_om, write_detail)
 
-        else: # alphabetical order
+        else:  # alphabetical order
             data_dict = self.get_data_dict()
-            write_data_dict(data_dict, 'Aircraft', out_parser, user_format)
+            write_data_dict(data_dict, out_parser,
+                            user_format, None, write_unit, write_om, write_detail)
+
+        timenow = datetime.now()
+        date_hour = str(timenow.strftime("%d-%m-%Y %H:%M:%S"))
+        out_parser.initial_comment = ["MARILib + GEMS scenario",
+                                      "Created in " + date_hour]
 
         out_parser.write()
-
 
     def get_data_dict(self):
         return get_data_dict(self, "Aircraft", {})
