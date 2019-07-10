@@ -195,32 +195,102 @@ def set_ac_data(data_dict, obj, has_custom_units):
                 attr_val = tuple(attr_val)
             setattr(obj, attr_path, attr_val)
 
+#------------------------------------------------------------------------------
+
+
+def write_data_line(value, key, out_parser, user_format, info_dict,
+                    write_unit, write_om, write_detail):
+    unit_str = ""
+    comment_line = ""
+    comment_inline = False
+    if info_dict is not None:
+        if write_unit and 'unit' in info_dict[key]:
+            unit_str = info_dict[key]['unit']
+            value = unit.convert_to(unit_str, value)
+            unit_str = " " + unit_str
+        if any((write_om, write_detail)):
+            if write_om and 'om' in info_dict[key]:
+                comment_line = "om: " + \
+                    "{:.0e}".format(info_dict[key]['om'])
+            if write_detail and 'txt' in info_dict[key]:
+                comment_line += " " + info_dict[key]['txt']
+            comment_inline = True
+    if not user_format or user_format is -1:
+        out_parser[key] = "{0}{1}".format(value,
+                                          unit_str)
+    elif user_format:
+        if user_format is True:
+            user_format = STANDARD_FORMAT
+        out_parser[key] = "{0}{1}".format(to_user_format(value, user_format),
+                                          unit_str)
+    if comment_inline:
+        out_parser.inline_comments[key] = comment_line
+
+
+def write_data_dict(data_dict, out_parser,
+                    user_format, info_dict, write_unit, write_om, write_detail):
+    if any((write_unit, write_om, write_detail)) is False:
+        info_dict = None
+        data_dict.pop("info", None)
+    elif info_dict is None:
+        info_dict = data_dict.pop("info", None)
     for key in sorted(data_dict.keys()):
         value = data_dict[key]
 
         if isinstance(value, dict):
             out_parser[key] = {}
-            write_data_dict(value, key, out_parser[key], user_format)
+            write_data_dict(value,
+                            out_parser[key],
+                            user_format,
+                            info_dict,
+                            write_unit,
+                            write_om,
+                            write_detail)
 
         else:
-            if user_format:
-                out_parser[key] = unit.user_format(value)
-            else:
-                out_parser[key] = value
+            write_data_line(value,
+                            key,
+                            out_parser,
+                            user_format,
+                            info_dict,
+                            write_unit,
+                            write_om,
+                            write_detail)
 
-#--------------------------------------------------------------------------------------------------------------------------------
-def write_ordered_data_dict(data_dict, section, out_parser, user_format):
 
-    for key in data_dict.keys():
+#------------------------------------------------------------------------------
+
+def write_ordered_data_dict(data_dict, out_parser,
+                            user_format, info_dict, write_unit, write_om, write_detail):
+    if any((write_unit, write_om, write_detail)) is False:
+        info_dict = None
+        data_dict.pop("info", None)
+    elif info_dict is None:
+        info_dict = data_dict.pop("info", None)
+    for key in data_dict:
         value = data_dict[key]
 
         if isinstance(value, OrderedDict):
             out_parser[key] = OrderedDict()
-            write_ordered_data_dict(value, key, out_parser[key], user_format)
+            write_ordered_data_dict(value,
+                                    out_parser[key],
+                                    user_format,
+                                    info_dict,
+                                    write_unit,
+                                    write_om,
+                                    write_detail)
 
         else:
-            if user_format:
-                out_parser[key] = unit.user_format(value)
+            write_data_line(value,
+                            key,
+                            out_parser,
+                            user_format,
+                            info_dict,
+                            write_unit,
+                            write_om,
+                            write_detail)
+
+#-------------------------------------------------------------------------
             else:
                 out_parser[key] = value
 
