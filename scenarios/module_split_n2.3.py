@@ -107,6 +107,9 @@ def geometry_coupling(aircraft):
 
 #-----------------------------------------------------------------------------------------------------------
 def propulsion(aircraft):
+    """
+    @constants : [rating_code, n_engine]
+    """
     eval_propulsion_design(aircraft)
     return
 
