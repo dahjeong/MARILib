@@ -55,32 +55,6 @@ def smart_round(X,S):
 	return round(X*Fac)#Fac
 
 
-#=========================================================================================================================================
-def user_format(value):
-    from numpy import max, ceil, log10, floor, float64, arange
-
-    if isinstance(value, tuple):
-        lst = list(value)
-        for i in arange(len(lst)):
-            lst[i] = user_format(lst[i])
-        return lst
-
-    if isinstance(value, (float, float64)):
-        if value == 0. or value == -0.:
-            return format(value, "".join((".4f")))
-
-        else:
-            V = abs(value)
-            if abs(value) > 1:
-                nb_dec = int(max((0,5-ceil(log10(V+1e-4)))))
-            else:
-                nb_dec = int(3 - floor(log10(V)))
-            return format(value, "".join((".",str(nb_dec),"f")))
-
-    else:
-        return value
-
-
 #==========================================================================================================================
 #
 #	Generic unit converter
