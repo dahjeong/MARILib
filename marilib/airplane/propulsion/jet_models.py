@@ -8,10 +8,9 @@ Created on Thu Jan 24 23:22:21 2019
 """
 
 import numpy
-from scipy.optimize import fsolve
-from marilib.tools.math import lin_interp_1d
 
 from marilib.earth import environment as earth
+from marilib.tools.math import lin_interp_1d, newton_solve
 
 
 #===========================================================================================================
@@ -63,10 +62,12 @@ def fan_thrust_with_bli(nacelle,Pamb,Tamb,Mach,PwShaft):
     fct_arg = (PwShaft,Pamb,rho,Ttot,Vair,r1,d1,nozzle_area)
 
     # Computation of y1 : thikness of the vein swallowed by the inlet
-    output_dict = fsolve(fct_power_bli, x0=0.50, args=fct_arg, full_output=True)
+    result, _, _ = newton_solve(fct_power_bli,
+                                0.50,  # dres_dy=jac,
+                                args=fct_arg)
 
-    y = output_dict[0][0]
-    if (output_dict[2]!=1):
+    y = result[0]
+    if y is None:
         raise Exception("Convergence problem")
 
     (q0,q1,q2,Vinlet,dVbli) = air_flows(rho,Vair,r1,d1,y)

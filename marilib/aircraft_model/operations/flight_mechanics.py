@@ -8,7 +8,6 @@ Created on Thu Jan 24 23:22:21 2019
 """
 
 import numpy
-from scipy.optimize import fsolve
 from marilib.tools.math import maximize_1d
 
 from marilib.earth import environment as earth
@@ -172,12 +171,17 @@ def propulsion_ceiling(aircraft,altp_ini,nei,vzreq,disa,speed_mode,speed,mass,ra
 
     fct_arg = (aircraft,nei,vzreq,disa,speed_mode,speed,mass,rating)
 
-    altp_and_infodict = fsolve(fct_prop_ceiling, x0 = altp_ini, args=fct_arg, full_output = True) #fsolve(altp_ini,fct) ;
+    result, _, _ = newton_solve(fct_prop_ceiling,
+                                y_0=altp_ini,  # dres_dy=fprime,
+                                args=fct_arg)
 
-    altp = altp_and_infodict[0][0]
-    rei = altp_and_infodict[2]
-    if(rei!=1):
+    altp = result[0]
+    if altp is not None:
+        rei = 1
+    else:
+        rei = 0
         altp = numpy.NaN
+        print "Warning: Propulsion ceiling module not converged"
 
     return altp, rei
 

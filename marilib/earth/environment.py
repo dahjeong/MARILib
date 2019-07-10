@@ -9,7 +9,7 @@ Created on Thu Jan 24 23:22:21 2019
 
 import numpy
 
-from scipy.optimize import fsolve
+from marilib.tools.math import newton_solve
 
 
 #===========================================================================================================
@@ -156,9 +156,11 @@ def altg_from_altp(altp,disa):
         zp = pressure_altitude(pamb)
         return altp-zp
 
-    output_dict = fsolve(fct_altg_from_altp, x0=altp, args=(altp,disa), full_output=True)
+    result, _, _ = newton_solve(fct_altg_from_altp,
+                                altp,  # dres_dy=jac,
+                                args=(altp, disa))
 
-    altg = output_dict[0][0]
+    altg = result[0]
 
     return altg
 

@@ -10,7 +10,6 @@ Changed name from "solvers.py" to "component.py" on 21:05:2019
 """
 
 
-from scipy.optimize import fsolve
 
 from marilib.aircraft_model.operations import mission as perfo, \
                                               environmental_impact as environ, \
@@ -98,9 +97,11 @@ def mission_tow(aircraft,payload,range,altp,mach,disa):
 
     fct_arg = (aircraft,payload,range,altp,mach,disa)
 
-    output_dict = fsolve(fct_mission, x0 = tow_ini, args=fct_arg, full_output=True)
+    result, _, _ = newton_solve(fct_mission,
+                                y_0=tow_ini,  # dres_dy=fprime,
+                                args=fct_arg)
 
-    tow = output_dict[0][0]
+    tow = result[0]
 
     [block_fuel,block_time,total_fuel] = perfo.mission(aircraft,range,tow,altp,mach,disa)
 
@@ -127,9 +128,11 @@ def mission_range(aircraft,tow,payload,altp,mach,disa):
 
     fct_arg = (aircraft,tow,payload,altp,mach,disa)
 
-    output_dict = fsolve(fct_mission, x0 = range_ini, args=fct_arg, full_output=True)
+    result, _, _ = newton_solve(fct_mission,
+                                y_0=range_ini,  # dres_dy=fprime,
+                                args=fct_arg)
 
-    range = output_dict[0][0]
+    range = result[0]
 
     [block_fuel,block_time,total_fuel] = perfo.mission(aircraft,range,tow,altp,mach,disa)
 
@@ -157,9 +160,11 @@ def mission_fuel_limited(aircraft,tow,total_fuel,altp,mach,disa):
 
     fct_arg = (aircraft,tow,total_fuel,altp,mach,disa)
 
-    output_dict = fsolve(fct_mission, x0 = range_ini, args=fct_arg, full_output=True)
+    result, _, _ = newton_solve(fct_mission,
+                                y_0=range_ini,  # dres_dy=fprime,
+                                args=fct_arg)
 
-    range = output_dict[0][0]
+    range = result[0]
 
     block_fuel,block_time,total_fuel = perfo.mission(aircraft,range,tow,altp,mach,disa)
 

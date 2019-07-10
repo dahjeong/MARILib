@@ -9,7 +9,6 @@ Created on Thu Jan 24 23:22:21 2019
 
 import numpy
 
-from scipy.optimize import fsolve
 from marilib.tools.math import lin_interp_1d
 
 from marilib.earth import environment as earth
@@ -278,11 +277,14 @@ def resize_boundary_layer(body_width,hub_width):
 
     body_bnd_layer = numpy.zeros((n,2))
 
-    for j in range (0, n-1):
-        fct1s = (r1,yVein[j],r0)
-        # computation of d1 theoretical thickness of the boundary layer that passes the same air flow around the hub
-        body_bnd_layer[j,0] = yVein[j]
-        body_bnd_layer[j,1] = fsolve(fct_specific_flows,yVein[j],fct1s)
+    for j in range(0, n - 1):
+        fct1s = (r1, yVein[j], r0)
+        # computation of d1 theoretical thickness of the boundary layer that
+        # passes the same air flow around the hub
+        body_bnd_layer[j, 0] = yVein[j]
+        body_bnd_layer[j, 1], _, _ = newton_solve(fct_specific_flows,
+                                                  yVein[j],  # dres_dy=jac,
+                                                  args=fct1s)
 
     return body_bnd_layer
 
@@ -331,9 +333,11 @@ def eval_bli_nacelle_design(this_nacelle,Pamb,Tamb,Mach,shaft_power,hub_width,bo
     fct_arg = (PwInput,deltaV,rho,Vair,r1,d1)
 
     # Computation of y1 : thickness of the vein swallowed by the inlet
-    output_dict = fsolve(fct_power_1, x0=d1, args=fct_arg, full_output=True)
+    result, _, _ = newton_solve(fct_power_1,
+                                d1,  # dres_dy=jac,
+                                args=fct_arg)
 
-    y1 = output_dict[0][0]
+    y1 = result[0]
 
     (q0,q1,q2,v1,dVbli) = jet.air_flows(rho,Vair,r1,d1,y1)
 

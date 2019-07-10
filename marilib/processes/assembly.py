@@ -9,8 +9,8 @@ Changed name from "design.py" to "assembly.py" on 21:05:2019
 """
 
 import numpy as np
-from scipy.optimize import fsolve,minimize,SR1, NonlinearConstraint,BFGS
-from marilib.tools import units as unit
+# non backward compatible modules: SR1, NonlinearConstraint,BFGS
+from scipy.optimize import minimize
 
 from marilib.earth import environment as earth
 from marilib.aircraft_model.airplane import airplane_design as airplane, regulation as regul
@@ -234,12 +234,16 @@ def eval_tail_statistical_sizing(aircraft):
 
     x_ini = np.array([htp_area_i,vtp_area_i])
 
-    fct_arg = aircraft
+    fct_arg = (aircraft)
 
-    output_dict = fsolve(fct_aircraft_pre_design, x0=x_ini, args=fct_arg, full_output=True)
+    result, _, _ = newton_solve(fct_aircraft_pre_design,
+                                x_ini,  # dres_dy=jac,
+                                args=fct_arg)
 
-    aircraft.horizontal_tail.area = output_dict[0][0]                           # Coupling variable
-    aircraft.vertical_tail.area = output_dict[0][1]                             # Coupling variable
+    # Coupling variable
+    aircraft.horizontal_tail.area = result[0]
+    # Coupling variable
+    aircraft.vertical_tail.area = result[1]
 
     airframe.eval_wing_design(aircraft)
     airframe.eval_vtp_design(aircraft)
@@ -284,12 +288,16 @@ def eval_aircraft_pre_design(aircraft):
 
     x_ini = np.array([aircraft.turbofan_nacelle.width,aircraft.turbofan_nacelle.y_ext])
 
-    fct_arg = aircraft
+    fct_arg = (aircraft)
 
-    output_dict = fsolve(fct_aircraft_pre_design, x0=x_ini, args=fct_arg, full_output=True)
+    result, _, _ = newton_solve(fct_aircraft_pre_design,
+                                x_ini,  # dres_dy=jac,
+                                args=fct_arg)
 
-    aircraft.turbofan_nacelle.width = output_dict[0][0]                         # Coupling variable
-    aircraft.turbofan_nacelle.y_ext = output_dict[0][1]                         # Coupling variable
+    # Coupling variable
+    aircraft.turbofan_nacelle.width = result[0]
+    # Coupling variable
+    aircraft.turbofan_nacelle.y_ext = result[1]
 
     airframe.eval_wing_design(aircraft)
     airframe.eval_vtp_design(aircraft)
@@ -335,12 +343,17 @@ def eval_aircraft_statistical_pre_design(aircraft):
 
     x_ini = np.array([htp_area_i,vtp_area_i])
 
-    fct_arg = aircraft
+    x_ini = numpy.array([htp_area_i, vtp_area_i])
 
-    output_dict = fsolve(fct_aircraft_pre_design, x0=x_ini, args=fct_arg, full_output=True)
+    fct_arg = (aircraft)
+    result, _, _ = newton_solve(fct_aircraft_pre_design,
+                                x_ini,  # dres_dy=jac,
+                                args=fct_arg)
 
-    aircraft.horizontal_tail.area = output_dict[0][0]                           # Coupling variable
-    aircraft.vertical_tail.area = output_dict[0][1]                             # Coupling variable
+    # Coupling variable
+    aircraft.horizontal_tail.area = result[0]
+    # Coupling variable
+    aircraft.vertical_tail.area = result[1]
 
     airframe.eval_wing_design(aircraft)
     airframe.eval_vtp_design(aircraft)
@@ -382,12 +395,16 @@ def eval_aircraft_statistical_pre_design_2(aircraft):
 
     x_ini = np.array([aircraft.turbofan_nacelle.width,aircraft.turbofan_nacelle.y_ext])
 
-    fct_arg = aircraft
+    fct_arg = (aircraft)
 
-    output_dict = fsolve(fct_aircraft_statistical_pre_design, x0=x_ini, args=fct_arg, full_output=True)
+    result, _, _ = newton_solve(fct_aircraft_statistical_pre_design,
+                                x_ini,  # dres_dy=jac,
+                                args=fct_arg)
 
-    aircraft.turbofan_nacelle.width = output_dict[0][0]                         # Coupling variable
-    aircraft.turbofan_nacelle.y_ext = output_dict[0][1]                         # Coupling variable
+    # Coupling variable
+    aircraft.turbofan_nacelle.width = result[0]
+    # Coupling variable
+    aircraft.turbofan_nacelle.y_ext = result[1]
 
     airframe.eval_wing_design(aircraft)
     airframe.eval_vtp_design(aircraft)
@@ -451,12 +468,16 @@ def eval_mass_estimation(aircraft):
     x_ini = np.array([aircraft.weights.mlw,
                       aircraft.weights.mzfw])
 
-    fct_arg = aircraft
+    fct_arg = (aircraft)
 
-    output_dict = fsolve(fct_mass, x0=x_ini, args=fct_arg, full_output=True)
+    result, _, _ = newton_solve(fct_mass,
+                                x_ini,  # dres_dy=jac,
+                                args=fct_arg)
 
-    aircraft.weights.mlw = output_dict[0][0]                          # Coupling variable
-    aircraft.weights.mzfw = output_dict[0][1]                         # Coupling variable
+    # Coupling variable
+    aircraft.weights.mlw = result[0]
+    # Coupling variable
+    aircraft.weights.mzfw = result[1]
 
     # Update mass
     #------------------------------------------------------------------------------------------------------
@@ -497,13 +518,18 @@ def eval_mass_mission_adaptation(aircraft):
                       aircraft.weights.mlw,
                       aircraft.weights.mzfw])
 
-    fct_arg = aircraft
+    fct_arg = (aircraft)
 
-    output_dict = fsolve(fct_mass_mission, x0=x_ini, args=fct_arg, full_output=True)
+    result, _, _ = newton_solve(fct_mass_mission,
+                                x_ini,  # dres_dy=jac,
+                                args=fct_arg)
 
-    aircraft.weights.mtow = output_dict[0][0]                         # Coupling variable
-    aircraft.weights.mlw = output_dict[0][1]                          # Coupling variable
-    aircraft.weights.mzfw = output_dict[0][2]                         # Coupling variable
+    # Coupling variable
+    aircraft.weights.mtow = result[0]
+    # Coupling variable
+    aircraft.weights.mlw = result[1]
+    # Coupling variable
+    aircraft.weights.mzfw = result[2]
 
     # Update mass data
     #------------------------------------------------------------------------------------------------------
@@ -733,23 +759,21 @@ def eval_hq0(aircraft):
                           c_g.cg_constraint_2,
                           c_g.cg_constraint_3])
         return y_out
-    #-----------------------------------------------------------------------------------------------------------
+    #-------------------------------------------------------------------------
 
-    x_ini = np.array([aircraft.wing.x_root,
-                      aircraft.horizontal_tail.area,
-                      aircraft.vertical_tail.area])
+    x_ini = numpy.array([aircraft.wing.x_root,
+                         aircraft.horizontal_tail.area,
+                         aircraft.vertical_tail.area])
 
-    fct_arg = aircraft
+    fct_arg = (aircraft)
 
-    output_dict = fsolve(fct_hq_optim, x0=x_ini, args=fct_arg, full_output=True)
+    result, _, _ = newton_solve(fct_hq_optim,
+                                x_ini,  # dres_dy=jac,
+                                args=fct_arg)
 
-    if (output_dict[2]!=1):
-        print(output_dict[3])
-        raise Exception("Convergence problem in HQ optimization")
-
-    aircraft.wing.x_root = output_dict[0][0]
-    aircraft.horizontal_tail.area = output_dict[0][1]
-    aircraft.vertical_tail.area = output_dict[0][2]
+    aircraft.wing.x_root = result[0]
+    aircraft.horizontal_tail.area = result[1]
+    aircraft.vertical_tail.area = result[2]
 
     eval_mda0(aircraft)
 
@@ -836,16 +860,19 @@ def eval_mda3(aircraft):
                       aircraft.horizontal_tail.area,
                       aircraft.vertical_tail.area])
 
-    fct_arg = aircraft
+    x_ini = numpy.array([aircraft.wing.x_root,
+                         aircraft.horizontal_tail.area,
+                         aircraft.vertical_tail.area])
 
-    output_dict = fsolve(fct_hq_optim, x0=x_ini, args=fct_arg, full_output=True)
+    fct_arg = (aircraft)
 
-    if (output_dict[2]!=1):
-        raise Exception("Convergence problem in HQ optimization")
+    result, _, _ = newton_solve(fct_hq_optim,
+                                x_ini,  # dres_dy=jac,
+                                args=fct_arg)
 
-    aircraft.wing.x_root = output_dict[0][0]
-    aircraft.horizontal_tail.area = output_dict[0][1]
-    aircraft.vertical_tail.area = output_dict[0][2]
+    aircraft.wing.x_root = result[0]
+    aircraft.horizontal_tail.area = result[1]
+    aircraft.vertical_tail.area = result[2]
 
     eval_mda1(aircraft)
     eval_handling_quality_analysis(aircraft)

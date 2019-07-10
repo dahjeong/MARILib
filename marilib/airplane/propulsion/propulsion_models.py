@@ -9,7 +9,6 @@ Created on Thu Jan 24 23:22:21 2019
 
 import numpy
 
-from scipy.optimize import fsolve
 from marilib.tools.math import lin_interp_1d
 
 from marilib.earth import environment as earth
