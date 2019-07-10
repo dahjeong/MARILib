@@ -84,9 +84,12 @@ class Aircraft(object):
         self.electric_engine = ElectricEngine()
         self.battery = Battery()
 
+    def import_from_file(
+            self, filename="Aircraft.ini", has_custom_units=False):
 
-    def export_to_file(self, file="Aircraft.ini", def_order = True,\
-                           user_format = True):
+        in_parser = ConfigObj(filename, indent_type="    ")
+        data_dict = in_parser["Aircraft"]
+        set_ac_data(data_dict, self, has_custom_units)
         """
         Build  ini file :
             Data tree file
