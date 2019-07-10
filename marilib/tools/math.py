@@ -114,3 +114,81 @@ def maximize_1d(xini,dx,*fct):
     return (xres,yres,rc)
 
 
+#=========================================================================
+
+
+def newton_solve(res_func, y_0, dres_dy=None, args=(),
+                 res_max=1e-12, relax=0.995, max_iter=50):
+    if res_max <= 0:
+        raise ValueError("res_max too small (%g <= 0)" % res_max)
+    if max_iter < 1:
+        raise ValueError("max_iter must be greater than 0")
+#     if force_ad:
+#         dres_dy = jacobian(res_func)
+    elif dres_dy is None:
+        dres_dy = get_approx_func(res_func, args)
+
+    k = 0
+    y_curr = numpy.atleast_1d(1.0 * y_0)
+    myargs = (y_curr,) + args
+    curr_res = res_func(*myargs)
+    n0 = norm(curr_res)
+    if n0 == 0.:
+        return y_curr, n0, 1
+    if not any(dres_dy):
+        msg = "jacobian was zero."
+        warnings.warn(msg, RuntimeWarning)
+        return y_curr, n0, 1
+
+    stop_crit = norm(curr_res) / n0
+    while k < max_iter and stop_crit > res_max:
+        drdy = dres_dy(*myargs)
+        newt_step = solve(numpy.atleast_2d(drdy).astype("float64"),
+                          curr_res.astype("float64"))
+        y_curr -= relax * newt_step
+        myargs = (y_curr,) + args
+        curr_res = res_func(*myargs)
+        stop_crit = norm(curr_res) / n0
+        k += 1
+#     print "k end ", k
+#     print stop_crit
+    if k == max_iter and stop_crit > res_max:
+        raise LinAlgError("Failed to converge Newton solver")
+    return y_curr, stop_crit, k
+
+
+def norm(x):
+    return numpy.dot(x, x.T)**0.5
+
+
+def approx_jac(res, y, args=(), step=1e-7):
+    if not hasattr(y, "__len__"):
+        y = numpy.array([y])
+        n = 1
+    else:
+        n = len(y)
+    jac = []
+    myargs = (y,) + args
+    res_ref = res(*myargs)
+    pert = numpy.zeros_like(y)
+    for i in xrange(n):
+        yi = y[i]
+        if hasattr(yi, "_value"):
+            yi = yi._value
+        pert[i] = step * 10**int(numpy.log10(yi))
+        y += pert
+        myargs_loc = (y,) + args
+        res_pert = res(*myargs_loc)
+        jac.append((res_pert - res_ref) / pert[i])
+        y -= pert
+        pert[i] = 0.
+    if len(jac) == 1:
+        return jac[0]
+    jac = numpy.concatenate(jac)
+    return jac
+
+
+def get_approx_func(res, args=(), step=1e-6):
+    def apprx(y, *args):
+        return approx_jac(res, y, args, step)
+    return apprx
