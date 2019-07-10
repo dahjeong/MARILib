@@ -472,7 +472,7 @@ UNIT["1e-6.K/m2/km/year"] = 1.e-6
 UNIT["1e-12.K/m2/km/year"] = 1.e-12
 
 # dim = "DataStructure"
-UNIT["structure"] = 1.
+UNIT["structure"] = 1
 
 # Conversion functions
 #-------------------------------------------------------------------------------------------------------------------------
