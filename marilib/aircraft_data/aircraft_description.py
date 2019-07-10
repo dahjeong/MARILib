@@ -15,17 +15,18 @@ from configobj import ConfigObj
 from marilib.tools import units as unit
 
 from numpy import max, ceil, log10, floor, float64, arange, abs, array, ndarray
+
 from marilib.aircraft_data.operational_performances \
     import DesignDriver, LowSpeed, HighSpeed, MaxPayloadMission, \
-           NominalMission, MaxFuelMission, ZeroPayloadMission, \
-           CostMission, Economics, Environmental_Impact
+    NominalMission, MaxFuelMission, ZeroPayloadMission, \
+    CostMission, Economics, Environmental_Impact
 
 from marilib.aircraft_data.physical_performances \
     import Aerodynamics, Propulsion, CharacteristicWeight, CenterOfGravity
 
 from marilib.airplane.airframe.airframe_data \
     import Cabin, Payload, Fuselage, Wing, Tanks, LandingGears, \
-           Systems, HorizontalTail, VerticalTail
+    Systems, HorizontalTail, VerticalTail
 
 from marilib.airplane.propulsion.turbofan.turbofan_data \
     import TurbofanPylon, TurbofanNacelle, TurbofanEngine
