@@ -246,6 +246,9 @@ UNIT["litre/h"] = 3.6
 UNIT["l/h"] = 3.6
 UNIT["ft3/h"] = 101.94048
 
+# dim = "VolumeCoefficient"
+UNIT["m2/kN"] = 1.
+
 # dim = "MachNumber"
 UNIT["Mach"] = 1.
 UNIT["mach"] = 1.
@@ -283,6 +286,9 @@ UNIT["shp"] = 745.70001
 # dim = "PowerDensity"
 UNIT["W/kg"] = 1.
 UNIT["kW/kg"] = 1.e3
+
+# dim = "PowerDensityPerTime"
+UNIT["kW/daN/h"] = 1 / 36.
 
 # dim = "Euro"
 UNIT["E"] = 1.
@@ -401,9 +407,15 @@ UNIT["btu/lb"] = 2325.9612
 
 # dim = "FuelCost"
 UNIT["$/l"] = 1.
+UNIT["$/gal"] = 0.264173
 UNIT["$/USgal"] = 0.264173
 UNIT["$/USbrl"] = 0.00838644
 
+# dim = "BatteryMassCost"
+UNIT["$/kg"] = 1.
+
+# dim = "BatteryEnergyCost"
+UNIT["$/kWh"] = 1. / UNIT['kWh']
 # dim = "nodimension"
 UNIT["sd"] = 1.
 UNIT["no_dim"] = 1.
