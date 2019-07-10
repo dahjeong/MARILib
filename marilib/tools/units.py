@@ -476,13 +476,19 @@ UNIT["structure"] = 1
 
 # Conversion functions
 #-------------------------------------------------------------------------------------------------------------------------
-def convert_from(ulab,val):
-# Convert val expressed in ulab to corresponding standard unit
-    return val*UNIT[ulab]
+def convert_from(ulab, val):
+    # Convert val expressed in ulab to corresponding standard unit
+    if val is None:
+        return None
+    if isinstance(val, list):
+        return [convert_from(ulab, v) for v in val]
+    return val * UNIT[ulab]
 
-def convert_to(ulab,val):
-# Convert val expressed in standard unit to ulab
 
-
-    return val/UNIT[ulab]
-
+def convert_to(ulab, val):
+    # Convert val expressed in standard unit to ulab
+    if val is None:
+        return None
+    if isinstance(val, list):
+        return [convert_to(ulab, v) for v in val]
+    return val / UNIT[ulab]
