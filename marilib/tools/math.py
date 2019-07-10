@@ -7,7 +7,10 @@ Created on Thu Jan 24 23:22:21 2019
          ROCHES Pascal : portage to Python
 """
 
+import warnings
 import numpy
+from numpy.linalg import solve
+from numpy.linalg.linalg import LinAlgError
 
 #===========================================================================================================
 def lin_interp_1d(x,X,Y):
