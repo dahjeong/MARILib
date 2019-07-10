@@ -341,7 +341,9 @@ def is_basetype(obj):
 
     return False
 
-#--------------------------------------------------------------------------------------------------------------------------------
+
+#-------------------------------------------------------------------------
+
 def get_data_dict(obj, obj_name, data_dict):
 
     curr_data_d = {}
@@ -361,37 +363,38 @@ def get_data_dict(obj, obj_name, data_dict):
 
     return data_dict
 
-#--------------------------------------------------------------------------------------------------------------------------------
+#-------------------------------------------------------------------------
+
+
 def get_ordered_data_dict(obj, obj_name, ord_dict):
     from inspect import getsource
     ord_dict_d = OrderedDict()
     ord_dict[obj_name] = ord_dict_d
     if not hasattr(obj, "__dict__"):
         return
-    l = getsource(obj.__class__)
-    i = l.find("__init__")
-    while i <= len(l):
-        occur=l.find("self.",i)
-        if occur == -1: # No attribute or end of class
+    info = getsource(obj.__class__)
+    i = info.find("__init__")
+    while i <= len(info):
+        occur = info.find("self.", i)
+        if occur == -1:  # No attribute or end of class
             return ord_dict
         else:
-            equal = l.find("=", occur)
-            eol = l.find("\n", occur)
-            if equal == -1 or equal >= eol: # no "=" inline
+            equal = info.find("=", occur)
+            eol = info.find("\n", occur)
+            if equal == -1 or equal >= eol:  # no "=" inline
                 return ord_dict
             else:
-                spc = l.find(" ", occur,equal)
+                spc = info.find(" ", occur, equal)
                 if spc != -1:
-                    attr_name = l[occur+5:spc]
+                    attr_name = info[occur + 5:spc]
                 else:
-                    attr_name = l[occur+5:equal]
-                if attr_name != "info":
-                    if attr_name in obj.__dict__.keys():
-                        attribute = getattr(obj, attr_name)
-                        if is_basetype(attribute):
-                            ord_dict_d[attr_name] = attribute
-                        else:
-                            get_ordered_data_dict(attribute, attr_name, ord_dict_d)
+                    attr_name = info[occur + 5:equal]
+                if attr_name in obj.__dict__.keys():
+                    attribute = getattr(obj, attr_name)
+                    if is_basetype(attribute):
+                        ord_dict_d[attr_name] = attribute
+                    else:
+                        get_ordered_data_dict(attribute, attr_name, ord_dict_d)
                 i = eol + 1
     return ord_dict
 
