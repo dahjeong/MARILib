@@ -9,20 +9,13 @@ Created on Thu Jan 24 23:22:21 2019
 
 from marilib import numpy
 
-from scipy.optimize import fsolve
-from marilib.tools.math import lin_interp_1d
-
-from marilib.earth import environment as earth
-
 from marilib.aircraft_model.airplane import aerodynamics as airplane_aero
-
 from marilib.airplane.propulsion import jet_models as jet
-
-from marilib.airplane.propulsion.turbofan.turbofan_models import turbofan_thrust
-
-from marilib.airplane.propulsion.hybrid_pte1.hybrid_pte1_models import hybrid_thrust
-
 from marilib.airplane.propulsion.hybrid_pte1 import hybrid_pte1_models as hybrid
+from marilib.airplane.propulsion.hybrid_pte1.hybrid_pte1_models import hybrid_thrust
+from marilib.airplane.propulsion.turbofan.turbofan_models import turbofan_thrust
+from marilib.earth import environment as earth
+from marilib.tools.math import lin_interp_1d, newton_solve
 
 
 #=========================================================================
@@ -247,15 +240,14 @@ def eval_hybrid_nacelle_design(aircraft):
     body_length = fuselage.length
     body_width = fuselage.width
 
-    eval_bli_nacelle_design(
-        e_nacelle,
-        Pamb,
-        Tamb,
-        Mach,
-        shaft_power,
-        hub_width,
-        body_length,
-        body_width)
+    eval_bli_nacelle_design(e_nacelle,
+                            Pamb,
+                            Tamb,
+                            Mach,
+                            shaft_power,
+                            hub_width,
+                            body_length,
+                            body_width)
 
     e_nacelle.x_axe = fuselage.length + 0.2 * e_nacelle.width
     e_nacelle.y_axe = 0.
@@ -345,7 +337,9 @@ def resize_boundary_layer(body_width, hub_width):
         # computation of d1 theoretical thickness of the boundary layer that
         # passes the same air flow around the hub
         body_bnd_layer[j, 0] = yVein[j]
-        body_bnd_layer[j, 1] = fsolve(fct_specific_flows, yVein[j], fct1s)
+        body_bnd_layer[j, 1], _, _ = newton_solve(fct_specific_flows,
+                                                  yVein[j],  # dres_dy=jac,
+                                                  args=fct1s)
 
     return body_bnd_layer
 
@@ -403,9 +397,11 @@ def eval_bli_nacelle_design(
     fct_arg = (PwInput, deltaV, rho, Vair, r1, d1)
 
     # Computation of y1 : thickness of the vein swallowed by the inlet
-    output_dict = fsolve(fct_power_1, x0=d1, args=fct_arg, full_output=True)
+    result, _, _ = newton_solve(fct_power_1,
+                                d1,  # dres_dy=jac,
+                                args=fct_arg)
 
-    y1 = output_dict[0][0]
+    y1 = result[0]
 
     (q0, q1, q2, v1, dVbli) = jet.air_flows(rho, Vair, r1, d1, y1)
 

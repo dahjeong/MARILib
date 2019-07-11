@@ -7,17 +7,17 @@ Created on Thu Jan 24 23:22:21 2019
 """
 
 
-from marilib import numpy
 import copy
-from scipy.optimize import fsolve, minimize
-from marilib.tools.math import maximize_1d, trinome
-from marilib.tools import units as unit
 
+from marilib import numpy
+from marilib.aircraft_model.airplane import aerodynamics as airplane_aero
+from marilib.aircraft_model.operations import flight_mechanics as flight
+from marilib.airplane.propulsion import propulsion_models as propu
 from marilib.earth import environment as earth
 from marilib.earth import environment_grad as g_earth
-from marilib.aircraft_model.airplane import aerodynamics as airplane_aero
-from marilib.airplane.propulsion import propulsion_models as propu
-from marilib.aircraft_model.operations import flight_mechanics as flight
+from marilib.tools import units as unit
+from marilib.tools.math import maximize_1d, trinome, newton_solve
+
 
 state_dict = {"time": 0, "mass": 1, "xg": 2, "zg": 3, "vgnd": 4, "path": 5}
 
@@ -214,30 +214,23 @@ def flight_point(aircraft, rating, nei, state, var, input, dat, cmd, dof, cst):
 
     fct_args = (state, input, dat, cmd, dof, cst, nei, rating, aircraft)
 
-    out_dict = fsolve(
-        fct_flight_point,
-        x0=var,
-        args=fct_args,
-        full_output=True)
-
-    rei = out_dict[2]
-    if(rei != 1):
-        raise Exception(
-            "Impossible to converge flight point",
-            unit.NM_m(
-                state[
-                    state_dict["xg"]]))
+    result, _, _ = newton_solve(fct_flight_point,
+                                var,  # dres_dy=jac,
+                                args=fct_args)
+    if(result[0] is None):
+        raise Exception("Impossible to converge flight point",
+                        unit.NM_m(state[state_dict["xg"]]))
 
     for i in range(n_dat):
         param[dat[i][0]] = eval(dat[i][1])
 
     for i in range(n_cmd):
-        param[cmd[i]] = out_dict[0][i]
+        param[cmd[i]] = result[i]
 
     xin = numpy.array([param["cz"], param["fn"]])
 
     for i in range(n_dof):
-        state[state_dict[dof[i]]] = out_dict[0][n_cmd + i]
+        state[state_dict[dof[i]]] = result[n_cmd + i]
 
     xout, state_d = state_dot(xin, state, rating, nei, aircraft)
 
