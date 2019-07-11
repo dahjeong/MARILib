@@ -65,7 +65,7 @@ from marilib.aircraft_data.aircraft_description import Aircraft
 
 from marilib.airplane.airframe.airframe_design \
     import eval_cabin_design, eval_fuselage_design, eval_vtp_design, eval_vtp_statistical_sizing, \
-           eval_htp_design, eval_htp_statistical_sizing, eval_wing_design
+    eval_htp_design, eval_htp_statistical_sizing, eval_wing_design
 
 from marilib.airplane.propulsion.propulsion_design \
     import eval_propulsion_design
@@ -75,69 +75,100 @@ from marilib.aircraft_model.airplane.airplane_design \
 
 from marilib.processes.component \
     import eval_nominal_mission, eval_mission_coupling, eval_take_off_performances, eval_landing_performances, \
-           eval_co2_metric, eval_cost_mission, eval_economics
+    eval_co2_metric, eval_cost_mission, eval_economics
 
 from marilib.processes.assembly \
     import aircraft_initialize, eval_mass_breakdown, eval_climb_performances, \
-           eval_handling_quality_analysis, eval_payload_range_analysis
+    eval_handling_quality_analysis, eval_payload_range_analysis
 
 
-#-----------------------------------------------------------------------------------------------------------
-def aircraft_initialization(aircraft, n_pax_ref, design_range, cruise_mach, propu_config, n_engine):
-    aircraft_initialize(aircraft, n_pax_ref, design_range, cruise_mach, propu_config, n_engine)
+#-------------------------------------------------------------------------
+def aircraft_initialization(aircraft, n_pax_ref, design_range,
+                            cruise_mach, propu_config, n_engine):
+    aircraft_initialize(aircraft,
+                        n_pax_ref,
+                        design_range,
+                        cruise_mach,
+                        propu_config,
+                        n_engine)
 
-#-----------------------------------------------------------------------------------------------------------
+#-------------------------------------------------------------------------
+
+
 def fuselage_design(aircraft):
     eval_cabin_design(aircraft)
     eval_fuselage_design(aircraft)
     return
 
-#-----------------------------------------------------------------------------------------------------------
+#-------------------------------------------------------------------------
+
+
 def lifting_plane_design(aircraft):
     eval_wing_design(aircraft)
     eval_vtp_design(aircraft)
     eval_htp_design(aircraft)
     return
 
-#-----------------------------------------------------------------------------------------------------------
+#-------------------------------------------------------------------------
+
+
 def geometry_coupling(aircraft):
     eval_vtp_statistical_sizing(aircraft)
     eval_htp_statistical_sizing(aircraft)
     return
 
-#-----------------------------------------------------------------------------------------------------------
+#-------------------------------------------------------------------------
+
+
 def propulsion(aircraft):
+    """
+    @constants : [rating_code, n_engine]
+    """
     eval_propulsion_design(aircraft)
     return
 
-#-----------------------------------------------------------------------------------------------------------
+#-------------------------------------------------------------------------
+
+
 def aircraft_aerodynamics(aircraft):
     eval_aerodynamics_design(aircraft)
     return
 
-#-----------------------------------------------------------------------------------------------------------
+#-------------------------------------------------------------------------
+
+
 def aircraft_mass(aircraft):
     eval_mass_breakdown(aircraft)
     return
 
-#-----------------------------------------------------------------------------------------------------------
+#-------------------------------------------------------------------------
+
+
 def mass_coupling(aircraft):
     eval_mass_coupling(aircraft)
 
-#-----------------------------------------------------------------------------------------------------------
+#-------------------------------------------------------------------------
+
+
 def handling_quality_analysis(aircraft):
     eval_handling_quality_analysis(aircraft)
 
-#-----------------------------------------------------------------------------------------------------------
+#-------------------------------------------------------------------------
+
+
 def nominal_mission(aircraft):
     eval_nominal_mission(aircraft)
     return
 
-#-----------------------------------------------------------------------------------------------------------
+#-------------------------------------------------------------------------
+
+
 def mission_coupling(aircraft):
     eval_mission_coupling(aircraft)
 
-#-----------------------------------------------------------------------------------------------------------
+#-------------------------------------------------------------------------
+
+
 def performance_analysis(aircraft):
     eval_take_off_performances(aircraft)
     eval_climb_performances(aircraft)
@@ -145,7 +176,9 @@ def performance_analysis(aircraft):
     eval_payload_range_analysis(aircraft)
     return
 
-#-----------------------------------------------------------------------------------------------------------
+#-------------------------------------------------------------------------
+
+
 def criteria(aircraft):
     eval_co2_metric(aircraft)
     eval_cost_mission(aircraft)
@@ -153,47 +186,52 @@ def criteria(aircraft):
     return
 
 
+#-------------------------------------------------------------------------
 
-# Initialize aircraft data structure
-#---------------------------------------------------------------------------
-aircraft = Aircraft()
+if __name__ == "__main__":
+    # Initialize aircraft data structure
+    #-------------------------------------------------------------------------
+    aircraft = Aircraft()
 
-n_pax_ref = 150                     # Reference number of passengers
-design_range = unit.m_NM(3000)      # Design range
-cruise_mach = 0.78                  # Nominal cruise mach number
+    n_pax_ref = 150                     # Reference number of passengers
+    design_range = unit.m_NM(3000)      # Design range
+    cruise_mach = 0.78                  # Nominal cruise mach number
 
-propu_config = 1    # 1: turbofan, 2: partial turbo electric
-n_engine = 2        # Number of engine
+    propu_config = 1    # 1: turbofan, 2: partial turbo electric
+    n_engine = 2        # Number of engine
 
-aircraft_initialization(aircraft, n_pax_ref, design_range, cruise_mach, propu_config, n_engine)
+    aircraft_initialization(aircraft,
+                            n_pax_ref,
+                            design_range,
+                            cruise_mach,
+                            propu_config,
+                            n_engine)
 
-#---------------------------------------------------------------------------
-# Setting HQ optimization mode
-aircraft.center_of_gravity.cg_range_optimization = 1
-#---------------------------------------------------------------------------
+    #-------------------------------------------------------------------------
+    # Setting HQ optimization mode
+    aircraft.center_of_gravity.cg_range_optimization = 1
+    #-------------------------------------------------------------------------
 
-fuselage_design(aircraft)
+    fuselage_design(aircraft)
 
-lifting_plane_design(aircraft)
+    lifting_plane_design(aircraft)
 
-propulsion(aircraft)
+    propulsion(aircraft)
 
-geometry_coupling(aircraft)
+    geometry_coupling(aircraft)
 
-aircraft_aerodynamics(aircraft)
+    aircraft_aerodynamics(aircraft)
 
-aircraft_mass(aircraft)
+    aircraft_mass(aircraft)
 
-mass_coupling(aircraft)
+    mass_coupling(aircraft)
 
-handling_quality_analysis(aircraft)
+    handling_quality_analysis(aircraft)
 
-nominal_mission(aircraft)
+    nominal_mission(aircraft)
 
-mission_coupling(aircraft)
+    mission_coupling(aircraft)
 
-performance_analysis(aircraft)
+    performance_analysis(aircraft)
 
-criteria(aircraft)
-
-
+    criteria(aircraft)

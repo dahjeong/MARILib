@@ -7,10 +7,10 @@ Created on Thu Jan 24 23:22:21 2019
          ROCHES Pascal : portage to Python
 """
 
-import numpy
+from marilib import numpy
 
 
-#===========================================================================================================
+#=========================================================================
 def eval_turbofan_pylon_mass(aircraft):
     """
     Turbofan pylon mass & CG estimation
@@ -21,14 +21,14 @@ def eval_turbofan_pylon_mass(aircraft):
 
     pylon = aircraft.turbofan_pylon
 
-    pylon.mass = 0.0031*engine.reference_thrust*engine.n_engine
+    pylon.mass = 0.0031 * engine.reference_thrust * engine.n_engine
 
     pylon.c_g = nacelle.x_ext + nacelle.length
 
     return
 
 
-#===========================================================================================================
+#=========================================================================
 def eval_turbofan_engine_design(aircraft):
     """
     Thermal propulsive architecture design
@@ -36,12 +36,17 @@ def eval_turbofan_engine_design(aircraft):
 
     engine = aircraft.turbofan_engine
 
-    engine.rating_factor = {"MTO":0.800, "MCN":0.688, "MCL":0.624, "MCR":0.560, "FID":0.100}
+    engine.rating_factor = {
+        "MTO": 0.800,
+        "MCN": 0.688,
+        "MCL": 0.624,
+        "MCR": 0.560,
+        "FID": 0.100}
 
     return
 
 
-#===========================================================================================================
+#=========================================================================
 def eval_turbofan_nacelle_design(aircraft):
     """
     Thermal propulsive architecture design
@@ -54,48 +59,58 @@ def eval_turbofan_nacelle_design(aircraft):
 
     nacelle = aircraft.turbofan_nacelle
 
-    nacelle.length = 0.86 * nacelle.width + engine.bpr ** 0.37      # statistical regression
+    nacelle.length = 0.86 * nacelle.width + \
+        engine.bpr ** 0.37      # statistical regression
 
     Knac = numpy.pi * nacelle.width * nacelle.length
 
-    nacelle.net_wetted_area = Knac*(1.48 - 0.0076*Knac)*engine.n_engine        # statistical regression
+    # statistical regression
+    nacelle.net_wetted_area = Knac * (1.48 - 0.0076 * Knac) * engine.n_engine
 
-    tan_phi0 = 0.25*(wing.c_kink-wing.c_tip)/(wing.y_tip-wing.y_kink) + numpy.tan(wing.sweep)
+    tan_phi0 = 0.25 * (wing.c_kink - wing.c_tip) / \
+        (wing.y_tip - wing.y_kink) + numpy.tan(wing.sweep)
 
     if (nacelle.attachment == 1):
-        if (engine.n_engine==2):
-            nacelle.y_ext = 0.8 * fuselage.width + 1.5 * nacelle.width      # statistical regression
+        if (engine.n_engine == 2):
+            nacelle.y_ext = 0.8 * fuselage.width + 1.5 * \
+                nacelle.width      # statistical regression
 
-            nacelle.x_ext = wing.x_root + (nacelle.y_ext-wing.y_root)*tan_phi0 - 0.7*nacelle.length
+            nacelle.x_ext = wing.x_root + \
+                (nacelle.y_ext - wing.y_root) * tan_phi0 - 0.7 * nacelle.length
 
             nacelle.z_ext = - 0.5 * fuselage.height \
-                            + (nacelle.y_ext - 0.5 * fuselage.width) * numpy.tan(wing.dihedral) \
-                            - 0.5*nacelle.width
+                + (nacelle.y_ext - 0.5 * fuselage.width) * numpy.tan(wing.dihedral) \
+                - 0.5 * nacelle.width
 
-        elif (engine.n_engine==4):
-            nacelle.y_int = 0.8 * fuselage.width + 1.5 * nacelle.width      # statistical regression
+        elif (engine.n_engine == 4):
+            nacelle.y_int = 0.8 * fuselage.width + 1.5 * \
+                nacelle.width      # statistical regression
 
-            nacelle.x_int = wing.x_root + (nacelle.y_int-wing.y_root)*tan_phi0 - 0.7*nacelle.length
+            nacelle.x_int = wing.x_root + \
+                (nacelle.y_int - wing.y_root) * tan_phi0 - 0.7 * nacelle.length
 
             nacelle.z_int = - 0.5 * fuselage.height \
-                            + (nacelle.y_int - 0.5 * fuselage.width) * numpy.tan(wing.dihedral) \
-                            - 0.5*nacelle.width
+                + (nacelle.y_int - 0.5 * fuselage.width) * numpy.tan(wing.dihedral) \
+                - 0.5 * nacelle.width
 
-            nacelle.y_ext = 2.0 * fuselage.width + 1.5 * nacelle.width      # statistical regression
+            nacelle.y_ext = 2.0 * fuselage.width + 1.5 * \
+                nacelle.width      # statistical regression
 
-            nacelle.x_ext = wing.x_root + (nacelle.y_ext-wing.y_root)*tan_phi0 - 0.7*nacelle.length
+            nacelle.x_ext = wing.x_root + \
+                (nacelle.y_ext - wing.y_root) * tan_phi0 - 0.7 * nacelle.length
 
             nacelle.z_ext = - 0.5 * fuselage.height \
-                            + (nacelle.y_ext - 0.5 * fuselage.width) * numpy.tan(wing.dihedral) \
-                            - 0.5*nacelle.width
+                + (nacelle.y_ext - 0.5 * fuselage.width) * numpy.tan(wing.dihedral) \
+                - 0.5 * nacelle.width
         else:
             raise Exception("engine.n_engine, number of engine not supported")
 
     elif (nacelle.attachment == 2):
-        if (engine.n_engine==2):
-            nacelle.y_ext = 0.5 * fuselage.width + 0.6 * nacelle.width      # statistical regression
+        if (engine.n_engine == 2):
+            nacelle.y_ext = 0.5 * fuselage.width + 0.6 * \
+                nacelle.width      # statistical regression
 
-            nacelle.x_ext = vtp.x_root - 0.5*nacelle.length
+            nacelle.x_ext = vtp.x_root - 0.5 * nacelle.length
 
             nacelle.z_ext = 0.5 * fuselage.height
         else:
@@ -107,7 +122,7 @@ def eval_turbofan_nacelle_design(aircraft):
     return
 
 
-#===========================================================================================================
+#=========================================================================
 def eval_turbofan_nacelle_mass(aircraft):
     """
     Thermal propulsive nacelle mass estimation
@@ -117,10 +132,10 @@ def eval_turbofan_nacelle_mass(aircraft):
 
     nacelle = aircraft.turbofan_nacelle
 
-    nacelle.mass = (1250. + 0.021*engine.reference_thrust)*engine.n_engine       # statistical regression
+    # statistical regression
+    nacelle.mass = (1250. + 0.021 * engine.reference_thrust) * engine.n_engine
 
-    nacelle.c_g = nacelle.x_ext + 0.7 * nacelle.length      # statistical regression
+    # statistical regression
+    nacelle.c_g = nacelle.x_ext + 0.7 * nacelle.length
 
     return
-
-
