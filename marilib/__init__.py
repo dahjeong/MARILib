@@ -9,6 +9,7 @@ import numpy as __np
 import marilib
 import sys
 
+marilib.is_using_autograd = False
 sys.modules["marilib"].numpy = __np
 sys.modules["marilib.numpy"] = __np
 
