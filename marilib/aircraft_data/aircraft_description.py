@@ -9,6 +9,8 @@ Created on Thu Jan 24 23:22:21 2019
 from collections import OrderedDict
 from datetime import datetime
 import itertools
+import sys
+
 
 from configobj import ConfigObj
 from numpy import max, ceil, log10, floor, float64, arange, abs, array, ndarray
@@ -22,10 +24,12 @@ from marilib.aircraft_data.physical_performances \
 from marilib.airplane.airframe.airframe_data \
     import Cabin, Payload, Fuselage, Wing, Tanks, LandingGears, \
     Systems, HorizontalTail, VerticalTail
-from marilib.airplane.propulsion.hybrid_pte1.hybrid_pte1_data \
-    import PowerElectricChain, Battery, ElectricNacelle, ElectricEngine
 from marilib.airplane.propulsion.turbofan.turbofan_data \
     import TurbofanPylon, TurbofanNacelle, TurbofanEngine
+from marilib.airplane.propulsion.hybrid_pte1.hybrid_pte1_data \
+    import Pte1PowerElectricChain, Pte1Battery, RearElectricNacelle, RearElectricEngine
+from marilib.airplane.propulsion.electric_ef1.electric_ef1_data \
+    import Ef1PowerElectricChain, Ef1Battery, ElectrofanPylon, ElectrofanNacelle, ElectrofanEngine
 from marilib.tools import units as unit
 
 
@@ -74,19 +78,25 @@ class Aircraft(object):
         self.turbofan_nacelle = TurbofanNacelle()
         self.turbofan_engine = TurbofanEngine()
 
-        self.power_elec_chain = PowerElectricChain()
-        self.electric_nacelle = ElectricNacelle()
-        self.electric_engine = ElectricEngine()
-        self.battery = Battery()
+        self.rear_electric_nacelle = RearElectricNacelle()
+        self.rear_electric_engine = RearElectricEngine()
+        self.pte1_power_elec_chain = Pte1PowerElectricChain()
+        self.pte1_battery = Pte1Battery()
+
+        self.electrofan_pylon = ElectrofanPylon()
+        self.electrofan_nacelle = ElectrofanNacelle()
+        self.electrofan_engine = ElectrofanEngine()
+        self.ef1_power_elec_chain = Ef1PowerElectricChain()
+        self.ef1_battery = Ef1Battery()
 
     def import_from_file(
-            self, filename="Aircraft.ini", has_custom_units=False):
+            self, filename="Aircraft.ini"):
 
         in_parser = ConfigObj(filename, indent_type="    ")
         data_dict = in_parser["Aircraft"]
-        set_ac_data(data_dict, self, has_custom_units)
+        set_ac_data(data_dict, self)
 
-    def export_to_file(self, filename="Aircraft.ini", def_order=True,
+    def export_to_file(self, filename="Aircraft.ini",
                        user_format=STANDARD_FORMAT, write_unit=False,
                        write_om=False, write_detail=False):
         """
@@ -105,19 +115,20 @@ class Aircraft(object):
         out_parser = ConfigObj(indent_type="    ")
         out_parser.filename = filename
 
-        if def_order:  # class definition order
+        # check python version
+        if (sys.version_info > (3, 0)):  # using Python 3 or above
+            data_dict = self.get_data_dict()
+            write_data_dict(data_dict, out_parser,
+                            user_format, None, write_unit, write_om, write_detail)
+        else:  # using Python 2
+
             data_dict = self.get_ordered_data_dict()
             write_ordered_data_dict(data_dict, out_parser,
                                     user_format, None, write_unit, write_om, write_detail)
 
-        else:  # alphabetical order
-            data_dict = self.get_data_dict()
-            write_data_dict(data_dict, out_parser,
-                            user_format, None, write_unit, write_om, write_detail)
-
         timenow = datetime.now()
         date_hour = str(timenow.strftime("%d-%m-%Y %H:%M:%S"))
-        out_parser.initial_comment = ["MARILib + GEMS scenario",
+        out_parser.initial_comment = ["MARILib configuration file",
                                       "Created in " + date_hour]
 
         out_parser.write()
@@ -132,7 +143,7 @@ class Aircraft(object):
 #------------------------------------------------------------------------------
 
 
-def get_proper_value(value, obj, key, custom_unit=None):
+def get_proper_value(value, obj, key, declared_unit):
     is_negative = False
     isnumber = False
     if isinstance(value, str):
@@ -154,30 +165,23 @@ def get_proper_value(value, obj, key, custom_unit=None):
         else:
             return value
     if isnumber:
-        if custom_unit is None:
-            if "INFO" in obj.__dict__:
-                value_unit = obj.INFO[key]['unit']
-            else:
-                return value
-        correct_value = unit.convert_from(value_unit, value)
-        return correct_value
+        converted_value = unit.convert_from(declared_unit, value)
+        return converted_value
     else:
         raise NotImplementedError
 
 #------------------------------------------------------------------------------
 
 
-def set_ac_data(data_dict, obj, has_custom_units):
+def set_ac_data(data_dict, obj):
     for attr_path, attr_val in data_dict.iteritems():
         if hasattr(attr_val, "__dict__"):
             sub_attr = getattr(obj, attr_path)
-            set_ac_data(attr_val, sub_attr, has_custom_units)
+            set_ac_data(attr_val, sub_attr)
         else:
             data_line = attr_val.rsplit(None, 1)
             value_sequence = [data_line[0]]
-            custom_unit = None
-            if has_custom_units:
-                custom_unit = data_line[-1]
+            unit = data_line[-1]
             initial_char = value_sequence[0][0]
             isnumpyarray = False
             if initial_char in ('(', '['):
@@ -195,7 +199,7 @@ def set_ac_data(data_dict, obj, has_custom_units):
                 value_sequence = value_sequence[1::2]
             attr_val = []
             for v in value_sequence:
-                v = get_proper_value(v, obj, attr_path, custom_unit)
+                v = get_proper_value(v, obj, attr_path, unit)
                 attr_val.append(v)
             if len(attr_val) is 1:
                 attr_val = attr_val[0]
@@ -247,7 +251,7 @@ def write_data_dict(data_dict, out_parser,
         data_dict.pop("INFO", None)
     elif info_dict is None:
         info_dict = data_dict.pop("INFO", None)
-    for key in sorted(data_dict.keys()):
+    for key in data_dict.keys():
         value = data_dict[key]
         if isinstance(value, dict):
             out_parser[key] = {}

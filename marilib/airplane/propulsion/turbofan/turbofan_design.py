@@ -23,7 +23,13 @@ def eval_turbofan_pylon_mass(aircraft):
 
     pylon.mass = 0.0031 * engine.reference_thrust * engine.n_engine
 
-    pylon.c_g = nacelle.x_ext + nacelle.length
+    if (engine.n_engine == 2):
+        pylon.c_g = nacelle.x_ext + 0.75 * nacelle.length
+    elif (engine.n_engine == 4):
+        pylon.c_g = 0.5 * \
+            (nacelle.x_int + nacelle.x_ext) + 0.75 * nacelle.length
+    else:
+        raise Exception("Number of engine is not allowed")
 
     return
 
@@ -58,6 +64,8 @@ def eval_turbofan_nacelle_design(aircraft):
     engine = aircraft.turbofan_engine
 
     nacelle = aircraft.turbofan_nacelle
+
+    nacelle.width = 0.5 * engine.bpr ** 0.7 + 5.E-6 * engine.reference_thrust
 
     nacelle.length = 0.86 * nacelle.width + \
         engine.bpr ** 0.37      # statistical regression

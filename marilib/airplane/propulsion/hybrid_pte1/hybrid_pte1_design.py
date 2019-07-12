@@ -11,6 +11,8 @@ from marilib import numpy
 
 from marilib.aircraft_model.airplane import aerodynamics as airplane_aero
 from marilib.airplane.propulsion import jet_models as jet
+from marilib.airplane.propulsion.turbofan.turbofan_models import turbofan_thrust
+from marilib.airplane.propulsion.hybrid_pte1.hybrid_pte1_models import pte1_thrust
 from marilib.airplane.propulsion.hybrid_pte1 import hybrid_pte1_models as hybrid
 from marilib.airplane.propulsion.hybrid_pte1.hybrid_pte1_models import hybrid_thrust
 from marilib.airplane.propulsion.turbofan.turbofan_models import turbofan_thrust
@@ -18,8 +20,8 @@ from marilib.earth import environment as earth
 from marilib.tools.math import lin_interp_1d, newton_solve
 
 
-#=========================================================================
-def eval_hybrid_engine_design(aircraft):
+#===========================================================================================================
+def eval_pte1_engine_design(aircraft):
     """
     Thermal propulsive architecture design
     """
@@ -31,10 +33,10 @@ def eval_hybrid_engine_design(aircraft):
     engine = aircraft.turbofan_engine
     nacelle = aircraft.turbofan_nacelle
 
-    battery = aircraft.battery
-    power_elec = aircraft.power_elec_chain
-    e_engine = aircraft.electric_engine
-    e_nacelle = aircraft.electric_nacelle
+    battery = aircraft.pte1_battery
+    power_elec = aircraft.pte1_power_elec_chain
+    e_engine = aircraft.rear_electric_engine
+    e_nacelle = aircraft.rear_electric_nacelle
 
     low_speed = aircraft.low_speed
 
@@ -119,11 +121,13 @@ def eval_hybrid_engine_design(aircraft):
                 + battery_power_feed[rating]
 
     # Storing results
-    e_engine.mto_e_power_ratio = e_power_ratio[MTO]
-    e_engine.mcn_e_power_ratio = e_power_ratio[MCN]
-    e_engine.mcl_e_power_ratio = e_power_ratio[MCL]
-    e_engine.mcr_e_power_ratio = e_power_ratio[MCR]
-    e_engine.fid_e_power_ratio = e_power_ratio[FID]
+    e_engine.n_engine = 1   # Only one electric fan at rear end of the fuselage
+
+    power_elec.mto_e_power_ratio = e_power_ratio[MTO]
+    power_elec.mcn_e_power_ratio = e_power_ratio[MCN]
+    power_elec.mcl_e_power_ratio = e_power_ratio[MCL]
+    power_elec.mcr_e_power_ratio = e_power_ratio[MCR]
+    power_elec.fid_e_power_ratio = e_power_ratio[FID]
 
     e_engine.mto_e_shaft_power = e_shaft_power[MTO]
     e_engine.mcn_e_shaft_power = e_shaft_power[MCN]
@@ -158,8 +162,9 @@ def eval_hybrid_engine_design(aircraft):
     return
 
 
-#=========================================================================
-def eval_hybrid_nacelle_design(aircraft):
+#===========================================================================================================
+def eval_pte1_nacelle_design(aircraft):
+>>>>>>> develop
     """
     Hybrid propulsive architecture design
     """
@@ -173,8 +178,8 @@ def eval_hybrid_nacelle_design(aircraft):
     engine = aircraft.turbofan_engine
     nacelle = aircraft.turbofan_nacelle
 
-    e_engine = aircraft.electric_engine
-    e_nacelle = aircraft.electric_nacelle
+    e_engine = aircraft.rear_electric_engine
+    e_nacelle = aircraft.rear_electric_nacelle
 
     (MTO, MCN, MCL, MCR, FID) = propulsion.rating_code
 
@@ -240,14 +245,7 @@ def eval_hybrid_nacelle_design(aircraft):
     body_length = fuselage.length
     body_width = fuselage.width
 
-    eval_bli_nacelle_design(e_nacelle,
-                            Pamb,
-                            Tamb,
-                            Mach,
-                            shaft_power,
-                            hub_width,
-                            body_length,
-                            body_width)
+    eval_pte1_bli_nacelle_design(e_nacelle,Pamb,Tamb,Mach,shaft_power,hub_width,body_length,body_width)
 
     e_nacelle.x_axe = fuselage.length + 0.2 * e_nacelle.width
     e_nacelle.y_axe = 0.
@@ -266,22 +264,9 @@ def eval_hybrid_nacelle_design(aircraft):
         mach = fd.get("mach")[rating]
         nei = fd.get("nei")[rating]
 
-        (Pamb, Tamb, Tstd, dTodZ) = earth.atmosphere(altp, disa)
-        (fn,
-         sec,
-         data) = hybrid_thrust(aircraft,
-                               Pamb,
-                               Tamb,
-                               mach,
-                               rating,
-                               nei)
-        (fn_core,
-         fn_fan1,
-         fn_fan2,
-         dVbli_o_V,
-         shaft_power2,
-         fn0,
-         shaft_power0) = data
+        (Pamb,Tamb,Tstd,dTodZ) = earth.atmosphere(altp,disa)
+        (fn,sec,data) = pte1_thrust(aircraft,Pamb,Tamb,mach,rating,nei)
+        (fn_core,fn_fan1,fn_fan2,dVbli_o_V,shaft_power2,fn0,shaft_power0) = data
 
         e_fan_thrust[rating] = fn_fan2
 
@@ -344,9 +329,8 @@ def resize_boundary_layer(body_width, hub_width):
     return body_bnd_layer
 
 
-#=========================================================================
-def eval_bli_nacelle_design(
-        this_nacelle, Pamb, Tamb, Mach, shaft_power, hub_width, body_length, body_width):
+#===========================================================================================================
+def eval_pte1_bli_nacelle_design(this_nacelle,Pamb,Tamb,Mach,shaft_power,hub_width,body_length,body_width):
     """
     BLI nacelle design
     """
@@ -474,8 +458,8 @@ def eval_bli_nacelle_design(
     return
 
 
-#=========================================================================
-def eval_hybrid_nacelle_mass(aircraft):
+#===========================================================================================================
+def eval_pte1_nacelle_mass(aircraft):
     """
     Hybridized propulsive nacelle mass estimations
     """
@@ -485,10 +469,10 @@ def eval_hybrid_nacelle_mass(aircraft):
     engine = aircraft.turbofan_engine
     nacelle = aircraft.turbofan_nacelle
 
-    e_engine = aircraft.electric_engine
-    e_nacelle = aircraft.electric_nacelle
+    e_engine = aircraft.rear_electric_engine
+    e_nacelle = aircraft.rear_electric_nacelle
 
-    power_elec = aircraft.power_elec_chain
+    power_elec = aircraft.pte1_power_elec_chain
 
     # Propulsion system mass is sized according max power
     # -----------------------------------------------------------------------
@@ -534,16 +518,37 @@ def eval_hybrid_nacelle_mass(aircraft):
     return
 
 
-#=========================================================================
-def eval_fuselage_battery_cg(aircraft):
+#===========================================================================================================
+def eval_pte1_battery_mass(aircraft):
     """
-    Body battery predesign
+    Battery predesign
     """
 
     fuselage = aircraft.fuselage
 
-    battery = aircraft.battery
+    weights = aircraft.weights
+    c_o_g = aircraft.center_of_gravity
+    propulsion = aircraft.propulsion
+
+    battery = aircraft.pte1_battery
 
     battery.c_g = fuselage.c_g
+
+    if (battery.strategy==1):
+        battery.mass = (battery.power_feed*battery.time_feed + battery.energy_cruise)/battery.energy_density
+        propulsion.battery_energy_density = battery.energy_density
+        weights.battery = battery.mass
+        c_o_g.battery = battery.c_g
+
+    elif (battery.strategy==2):
+
+        battery.energy_cruise = max(0.,battery.mass*battery.energy_density - battery.power_feed*battery.time_feed)
+        propulsion.battery_energy_density = battery.energy_density
+        weights.battery = battery.mass
+        c_o_g.battery = battery.c_g
+
+    else:
+        raise Exception("battery.strategy index is out of range")
+
 
     return

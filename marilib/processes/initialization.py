@@ -223,7 +223,7 @@ def wing_mac(wing_area_i, wing_aspect_ratio_i):
 
 #=========================================================================
 def fuel_type():
-    fuel_type_i = 1     # 1: kerosene, 2: hydrogene
+    fuel_type_i = "Kerosene"     # Kerosene, Hydrogene, Methane, Battery
     return fuel_type_i
 
 #=========================================================================
@@ -261,12 +261,11 @@ def nacelle_attachment(n_pax_ref):
 
 
 def rating_code():
-    rating_code_i = (
-        "MTO",
-        "MCN",
-        "MCL",
-        "MCR",
-        "FID")     # Engine rating codes
+    rating_code_i = ("MTO",
+                     "MCN",
+                     "MCL",
+                     "MCR",
+                     "FID")     # Engine rating codes
     return rating_code_i
 
 #=========================================================================
@@ -316,17 +315,16 @@ def reference_thrust(n_pax_ref, design_range, n_engine):
         1.e5 + 177. * n_pax_ref * design_range * 1.e-6) / n_engine
     return reference_thrust_i
 
+
 #=========================================================================
-
-
-def turbofan_nacelle_width(bpr, reference_thrust):
-    turbofan_nacelle_width_i = 0.5 * bpr ** 0.7 + 5.E-6 * reference_thrust
+def nacelle_width(bpr, reference_thrust):
+    turbofan_nacelle_width_i = (9.e-6 * bpr * reference_thrust)**0.4
     return turbofan_nacelle_width_i
 
 #=========================================================================
 
 
-def turbofan_nacelle_y_ext(attachment, fuselage_width_i, nacelle_width_i):
+def nacelle_y_ext(attachment, fuselage_width_i, nacelle_width_i):
     if attachment == 1:
         nacelle_y_ext_i = 0.7 * fuselage_width_i + 1.5 * nacelle_width_i
     else:
@@ -408,7 +406,8 @@ def battery_energy_cruise():
 
 
 def battery_energy_density():
-    battery_energy_density_i = unit.J_kWh(0.2)    # Battery energy density
+    # Battery energy density (kWh/kg)
+    battery_energy_density_i = unit.J_kWh(0.2)
     return battery_energy_density_i
 
 #=========================================================================
@@ -418,6 +417,21 @@ def battery_power_density():
     # Battery power density (capability to release power per mass unit
     battery_power_density_i = 1.e3
     return battery_power_density_i
+
+#=========================================================================
+
+
+def battery_density():
+    battery_density_i = 2800.    # Battery density (kg/m3)
+    return battery_density_i
+
+#=========================================================================
+
+
+def battery_fill_factor():
+    # Ratio of available wing box volume used for batteries
+    battery_fill_factor_i = 0.35
+    return battery_fill_factor_i
 
 #=========================================================================
 

@@ -27,7 +27,6 @@ def mission(aircraft, dist_range, tow, altp, mach, disa):
 
     engine = aircraft.turbofan_engine
     propulsion = aircraft.propulsion
-    battery = aircraft.battery
 
     (MTO, MCN, MCL, MCR, FID) = propulsion.rating_code
 
@@ -46,8 +45,7 @@ def mission(aircraft, dist_range, tow, altp, mach, disa):
     sfc = propu.sfc(aircraft, pamb, tamb, mach, MCR, nei)
 
     if (propulsion.architecture == "PTE1"):
-        fn, sec, data = propu.hybrid_thrust(
-            aircraft, pamb, tamb, mach, MCR, nei)
+        fn, sec, data = propu.pte1_thrust(aircraft, pamb, tamb, mach, MCR, nei)
 
     # Departure ground phases
     #-------------------------------------------------------------------------
@@ -64,7 +62,7 @@ def mission(aircraft, dist_range, tow, altp, mach, disa):
             (1 - numpy.exp(-(sfc * g * dist_range) / (tas * lod_cruise)))
     elif (propulsion.architecture == "PTE1"):
         fuel_mission = tow * (1 - numpy.exp(-(sfc * g * dist_range) / (tas * lod_cruise))) \
-            - (sfc / sec) * battery.energy_cruise
+            - (sfc / sec) * aircraft.pte1_battery.energy_cruise
     else:
         raise Exception("propulsion.architecture index is out of range")
 
@@ -176,13 +174,13 @@ def ceilings(aircraft, toc, oei_ceil):
 
     rating = MCL    # Max Climb
 
-    slope, vz_clb = flight.air_path(
-        aircraft, nei, altp, disa, speed_mode, speed, mass, rating)
+    slope, vz_clb = flight.air_path(aircraft, nei, altp, disa,
+                                    speed_mode, speed, mass, rating)
 
     rating = MCR    # Max Cruise
 
-    slope, vz_crz = flight.air_path(
-        aircraft, nei, altp, disa, speed_mode, speed, mass, rating)
+    slope, vz_crz = flight.air_path(aircraft, nei, altp, disa,
+                                    speed_mode, speed, mass, rating)
 
     # One engine inoperative ceiling
     #-------------------------------------------------------------------------
@@ -197,8 +195,8 @@ def ceilings(aircraft, toc, oei_ceil):
 
     rating = MCN
 
-    oei_slope, vz, oei_mach, cz = flight.max_path(
-        aircraft, nei, altp, disa, speed_mode, mass, rating)
+    oei_slope, vz, oei_mach, cz = flight.max_path(aircraft, nei, altp, disa,
+                                                  speed_mode, mass, rating)
 
     #-------------------------------------------------------------------------
     return vz_clb, vz_crz, oei_slope, oei_mach
@@ -238,12 +236,12 @@ def time_to_climb(aircraft, toc, disa, mass, vcas1, vcas2, mach):
     speed_mode = 1    # Constant CAS
     rating = MCL
 
-    [slope, v_z0] = flight.air_path(
-        aircraft, nei, altp[0], disa, speed_mode, vcas1, mass, rating)
-    [slope, v_z1] = flight.air_path(
-        aircraft, nei, altp[1], disa, speed_mode, vcas1, mass, rating)
-    [slope, v_z2] = flight.air_path(
-        aircraft, nei, altp[2], disa, speed_mode, vcas1, mass, rating)
+    [slope, v_z0] = flight.air_path(aircraft, nei, altp[0], disa,
+                                    speed_mode, vcas1, mass, rating)
+    [slope, v_z1] = flight.air_path(aircraft, nei, altp[1], disa,
+                                    speed_mode, vcas1, mass, rating)
+    [slope, v_z2] = flight.air_path(aircraft, nei, altp[2], disa,
+                                    speed_mode, vcas1, mass, rating)
     v_z = numpy.array([v_z0, v_z1, v_z2])
 
     if (v_z[0] < 0. or v_z[1] < 0. or v_z[2] < 0.):
@@ -264,33 +262,12 @@ def time_to_climb(aircraft, toc, disa, mass, vcas1, vcas2, mach):
     vc1 = (vc0 + vc2) / 2.
     vcas = numpy.array([vc0, vc1, vc2])
 
-    acc0 = flight.acceleration(
-        aircraft,
-        nei,
-        altp[2],
-        disa,
-        speed_mode,
-        vcas[0],
-        mass,
-        rating)
-    acc1 = flight.acceleration(
-        aircraft,
-        nei,
-        altp[2],
-        disa,
-        speed_mode,
-        vcas[1],
-        mass,
-        rating)
-    acc2 = flight.acceleration(
-        aircraft,
-        nei,
-        altp[2],
-        disa,
-        speed_mode,
-        vcas[2],
-        mass,
-        rating)
+    acc0 = flight.acceleration(aircraft, nei, altp[2], disa,
+                               speed_mode, vcas[0], mass, rating)
+    acc1 = flight.acceleration(aircraft, nei, altp[2], disa,
+                               speed_mode, vcas[1], mass, rating)
+    acc2 = flight.acceleration(aircraft, nei, altp[2], disa,
+                               speed_mode, vcas[2], mass, rating)
     acc = numpy.array([acc0, acc1, acc2])
 
     if(acc[0] < 0. or acc[1] < 0. or acc[2] < 0.):
@@ -311,12 +288,12 @@ def time_to_climb(aircraft, toc, disa, mass, vcas1, vcas2, mach):
     altp1 = (altp0 + altp2) / 2.
     altp = numpy.array([altp0, altp1, altp2])
 
-    [slope, v_z0] = flight.air_path(
-        aircraft, nei, altp[0], disa, speed_mode, vcas2, mass, rating)
-    [slope, v_z1] = flight.air_path(
-        aircraft, nei, altp[1], disa, speed_mode, vcas2, mass, rating)
-    [slope, v_z2] = flight.air_path(
-        aircraft, nei, altp[2], disa, speed_mode, vcas2, mass, rating)
+    [slope, v_z0] = flight.air_path(aircraft, nei, altp[0], disa,
+                                    speed_mode, vcas2, mass, rating)
+    [slope, v_z1] = flight.air_path(aircraft, nei, altp[1], disa,
+                                    speed_mode, vcas2, mass, rating)
+    [slope, v_z2] = flight.air_path(aircraft, nei, altp[2], disa,
+                                    speed_mode, vcas2, mass, rating)
     v_z = numpy.array([v_z0, v_z1, v_z2])
 
     if(v_z[0] < 0. or v_z[1] < 0. or v_z[2] < 0.):
@@ -340,12 +317,12 @@ def time_to_climb(aircraft, toc, disa, mass, vcas1, vcas2, mach):
 
         speed_mode = 2    # mach
 
-        [slope, v_z0] = flight.air_path(
-            aircraft, nei, altp[0], disa, speed_mode, mach, mass, rating)
-        [slope, v_z1] = flight.air_path(
-            aircraft, nei, altp[1], disa, speed_mode, mach, mass, rating)
-        [slope, v_z2] = flight.air_path(
-            aircraft, nei, altp[2], disa, speed_mode, mach, mass, rating)
+        [slope, v_z0] = flight.air_path(aircraft, nei, altp[0], disa,
+                                        speed_mode, mach, mass, rating)
+        [slope, v_z1] = flight.air_path(aircraft, nei, altp[1], disa,
+                                        speed_mode, mach, mass, rating)
+        [slope, v_z2] = flight.air_path(aircraft, nei, altp[2], disa,
+                                        speed_mode, mach, mass, rating)
         v_z = numpy.array([v_z0, v_z1, v_z2])
 
         if(v_z[0] < 0. or v_z[1] < 0. or v_z[2] < 0.):
@@ -403,8 +380,8 @@ def take_off(aircraft, kvs1g, altp, disa, mass, hld_conf):
     speed_mode = 1
     speed = flight.get_speed(pamb, speed_mode, mach)
 
-    seg2path, vz = flight.air_path(
-        aircraft, nei, altp, disa, speed_mode, speed, mass, rating)
+    seg2path, vz = flight.air_path(aircraft, nei, altp, disa,
+                                   speed_mode, speed, mass, rating)
 
     return seg2path, tofl
 
@@ -433,20 +410,20 @@ def take_off_field_length(aircraft, altp, disa, mass, hld_conf):
 
         seg2_path_ = numpy.array([0., 0.])
         seg2_path_[0] = seg2_path
-        seg2_path_[1], trash = take_off(
-            aircraft, kvs1g_[1], altp, disa, mass, hld_conf)
+        seg2_path_[1], trash = take_off(aircraft, kvs1g_[1], altp, disa,
+                                        mass, hld_conf)
 
         while(seg2_path_[0] < seg2_path_[1] and seg2_path_[1] < seg2_min_path):
             kvs1g_[0] = kvs1g_[1]
             kvs1g_[1] = kvs1g_[1] + dkvs1g
-            seg2_path_[1], trash = take_off(
-                aircraft, kvs1g_[1], altp, disa, mass, hld_conf)
+            seg2_path_[1], trash = take_off(aircraft, kvs1g_[1], altp, disa,
+                                            mass, hld_conf)
 
         if(seg2_min_path < seg2_path_[1]):
             kvs1g = kvs1g_[
                 0] + ((kvs1g_[1] - kvs1g_[0]) / (seg2_path_[1] - seg2_path_[0])) * (seg2_min_path - seg2_path_[0])
-            [seg2_path, tofl] = take_off(
-                aircraft, kvs1g, altp, disa, mass, hld_conf)
+            [seg2_path, tofl] = take_off(aircraft, kvs1g, altp, disa,
+                                         mass, hld_conf)
             seg2_path = seg2_min_path
             limitation = 2
         else:

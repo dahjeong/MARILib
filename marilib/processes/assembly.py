@@ -137,63 +137,101 @@ def aircraft_initialize(
     aircraft.horizontal_tail.area = init.htp_area(aircraft.wing.area)
     aircraft.vertical_tail.area = init.vtp_area(aircraft.wing.area)
 
-    if (aircraft.propulsion.architecture == "TF"
-            or aircraft.propulsion.architecture == "PTE1"):
-        aircraft.turbofan_engine.n_engine = n_engine
-        aircraft.turbofan_engine.bpr = init.bpr(n_pax_ref)
-        aircraft.turbofan_engine.reference_thrust = init.reference_thrust(
-            n_pax_ref,
-            design_range,
-            n_engine)                                            # Main design variable
+    #-------------------------------------------------------------------------
+    aircraft.turbofan_engine.n_engine = n_engine
+    aircraft.turbofan_engine.bpr = init.bpr(n_pax_ref)
+    aircraft.turbofan_engine.reference_thrust = init.reference_thrust(
+        n_pax_ref,
+        design_range,
+        n_engine)                                            # Main design variable
 
-        aircraft.turbofan_engine.core_thrust_ratio = init.core_thrust_ratio()
-        aircraft.turbofan_engine.core_width_ratio = init.core_width_ratio()
-        aircraft.turbofan_engine.core_weight_ratio = init.core_weight_ratio()
+    aircraft.turbofan_engine.core_thrust_ratio = init.core_thrust_ratio()
+    aircraft.turbofan_engine.core_width_ratio = init.core_width_ratio()
+    aircraft.turbofan_engine.core_weight_ratio = init.core_weight_ratio()
 
-        aircraft.turbofan_nacelle.attachment = init.nacelle_attachment(
-            n_pax_ref)
-        aircraft.turbofan_nacelle.efficiency_fan = init.efficiency_fan()
-        aircraft.turbofan_nacelle.efficiency_prop = init.efficiency_prop()
-        aircraft.turbofan_nacelle.width = init.turbofan_nacelle_width(aircraft.turbofan_engine.bpr,
-                                                                      aircraft.turbofan_engine.reference_thrust)
-        aircraft.turbofan_nacelle.y_ext = init.turbofan_nacelle_y_ext(aircraft.turbofan_nacelle.attachment,
-                                                                      aircraft.fuselage.width,
-                                                                      aircraft.turbofan_nacelle.width)
+    aircraft.turbofan_nacelle.attachment = init.nacelle_attachment(n_pax_ref)
+    aircraft.turbofan_nacelle.efficiency_fan = init.efficiency_fan()
+    aircraft.turbofan_nacelle.efficiency_prop = init.efficiency_prop()
+    aircraft.turbofan_nacelle.width = init.nacelle_width(aircraft.turbofan_engine.bpr,
+                                                         aircraft.turbofan_engine.reference_thrust)
+    aircraft.turbofan_nacelle.y_ext = init.nacelle_y_ext(aircraft.turbofan_nacelle.attachment,
+                                                         aircraft.fuselage.width,
+                                                         aircraft.turbofan_nacelle.width)
 
-    aircraft.horizontal_tail.attachment = init.htp_attachment(
-        aircraft.turbofan_nacelle.attachment)
+    #-------------------------------------------------------------------------
+    aircraft.rear_electric_nacelle.efficiency_fan = init.efficiency_fan()
+    aircraft.rear_electric_nacelle.efficiency_prop = init.efficiency_prop()
+    aircraft.rear_electric_nacelle.motor_efficiency = init.e_motor_efficiency()
+    aircraft.rear_electric_nacelle.controller_efficiency = init.controller_efficiency()
+    aircraft.rear_electric_nacelle.controller_pw_density = init.controller_pw_density()
+    aircraft.rear_electric_nacelle.motor_pw_density = init.e_motor_pw_density()
+    aircraft.rear_electric_nacelle.nacelle_pw_density = init.e_nacelle_pw_density()
 
     # Watts, electric motor power
-    aircraft.power_elec_chain.mto = init.electric_shaft_power()
+    aircraft.pte1_power_elec_chain.mto = init.electric_shaft_power()
     # Watts, electric motor power
-    aircraft.power_elec_chain.mcn = init.electric_shaft_power()
+    aircraft.pte1_power_elec_chain.mcn = init.electric_shaft_power()
     # Watts, electric motor power
-    aircraft.power_elec_chain.mcl = init.electric_shaft_power()
+    aircraft.pte1_power_elec_chain.mcl = init.electric_shaft_power()
     # Watts, electric motor power
-    aircraft.power_elec_chain.mcr = init.electric_shaft_power()
-    aircraft.power_elec_chain.fid = 0.01
+    aircraft.pte1_power_elec_chain.mcr = init.electric_shaft_power()
+    aircraft.pte1_power_elec_chain.fid = 0.01
 
-    aircraft.battery.strategy = init.battery_strategy()
-    aircraft.battery.power_feed = init.battery_power_feed()
-    aircraft.battery.time_feed = init.battery_time_feed()
-    aircraft.battery.energy_cruise = init.battery_energy_cruise()
-    aircraft.battery.energy_density = init.battery_energy_density()
-    aircraft.battery.power_density = init.battery_power_density()
+    aircraft.pte1_power_elec_chain.overall_efficiency = init.e_chain_efficiency()
+    aircraft.pte1_power_elec_chain.generator_pw_density = init.generator_power_density()
+    aircraft.pte1_power_elec_chain.rectifier_pw_density = init.rectifier_pw_density()
+    aircraft.pte1_power_elec_chain.wiring_pw_density = init.wiring_pw_density()
+    aircraft.pte1_power_elec_chain.cooling_pw_density = init.cooling_pw_density()
 
-    aircraft.power_elec_chain.overall_efficiency = init.e_chain_efficiency()
-    aircraft.power_elec_chain.generator_pw_density = init.generator_power_density()
-    aircraft.power_elec_chain.rectifier_pw_density = init.rectifier_pw_density()
-    aircraft.power_elec_chain.wiring_pw_density = init.wiring_pw_density()
-    aircraft.power_elec_chain.cooling_pw_density = init.cooling_pw_density()
+    aircraft.pte1_battery.strategy = init.battery_strategy()
+    aircraft.pte1_battery.power_feed = init.battery_power_feed()
+    aircraft.pte1_battery.time_feed = init.battery_time_feed()
+    aircraft.pte1_battery.energy_cruise = init.battery_energy_cruise()
+    aircraft.pte1_battery.energy_density = init.battery_energy_density()
+    aircraft.pte1_battery.power_density = init.battery_power_density()
 
-    aircraft.electric_nacelle.efficiency_fan = init.efficiency_fan()
-    aircraft.electric_nacelle.efficiency_prop = init.efficiency_prop()
-    aircraft.electric_nacelle.motor_efficiency = init.e_motor_efficiency()
-    aircraft.electric_nacelle.controller_efficiency = init.controller_efficiency()
-    aircraft.electric_nacelle.controller_pw_density = init.controller_pw_density()
-    aircraft.electric_nacelle.motor_pw_density = init.e_motor_pw_density()
-    aircraft.electric_nacelle.nacelle_pw_density = init.e_nacelle_pw_density()
+    #-------------------------------------------------------------------------
+    aircraft.electrofan_engine.n_engine = n_engine
+    aircraft.electrofan_engine.reference_thrust = init.reference_thrust(
+        n_pax_ref,
+        design_range,
+        n_engine)                                            # Main design variable
 
+    aircraft.electrofan_nacelle.attachment = init.nacelle_attachment(n_pax_ref)
+    aircraft.electrofan_nacelle.efficiency_fan = init.efficiency_fan()
+    aircraft.electrofan_nacelle.efficiency_prop = init.efficiency_prop()
+    aircraft.electrofan_nacelle.width = init.nacelle_width(
+        9, aircraft.electrofan_engine.reference_thrust)
+    aircraft.turbofan_nacelle.y_ext = init.nacelle_y_ext(aircraft.electrofan_nacelle.attachment,
+                                                         aircraft.fuselage.width,
+                                                         aircraft.electrofan_nacelle.width)
+
+    aircraft.ef1_power_elec_chain.overall_efficiency = init.e_chain_efficiency()
+    aircraft.ef1_power_elec_chain.generator_pw_density = init.generator_power_density()
+    aircraft.ef1_power_elec_chain.rectifier_pw_density = init.rectifier_pw_density()
+    aircraft.ef1_power_elec_chain.wiring_pw_density = init.wiring_pw_density()
+    aircraft.ef1_power_elec_chain.cooling_pw_density = init.cooling_pw_density()
+
+    aircraft.ef1_battery.energy_density = init.battery_energy_density()
+    aircraft.ef1_battery.power_density = init.battery_power_density()
+    aircraft.ef1_battery.density = init.battery_density()
+    aircraft.ef1_battery.fill_factor = init.battery_fill_factor()
+
+    if (propu_config == "TF" or propu_config == "PTE1"):
+
+        aircraft.horizontal_tail.attachment = init.htp_attachment(
+            aircraft.turbofan_nacelle.attachment)
+
+    elif (propu_config == "EF1"):
+
+        aircraft.horizontal_tail.attachment = init.htp_attachment(
+            aircraft.electrofan_nacelle.attachment)
+
+    else:
+
+        raise Exception("Propulsion architecture type is unknown")
+
+    #-------------------------------------------------------------------------
     aircraft.propulsion.bli_effect = init.boundary_layer_effect()
 
     aircraft.propulsion.rating_code = init.rating_code()
@@ -597,8 +635,8 @@ def eval_payload_range_analysis(aircraft):
     aircraft.max_payload_mission.tow = tow
     aircraft.max_payload_mission.payload = payload
 
-    range, block_fuel, block_time, total_fuel = sub_proc.mission_range(
-        aircraft, tow, payload, altp, mach, disa)
+    range, block_fuel, block_time, total_fuel = sub_proc.mission_range(aircraft, tow, payload,
+                                                                       altp, mach, disa)
 
     aircraft.max_payload_mission.range = range
     aircraft.max_payload_mission.block_fuel = block_fuel
@@ -736,8 +774,8 @@ def eval_handling_quality_analysis(aircraft):
     hld_conf = aircraft.aerodynamics.hld_conf_ld
     mass = c_g.max_fwd_mass
 
-    cg_max_fwd_stall, speed, fn, aoa, ih, c_z, cx_trimmed = h_q.forward_cg_stall(
-        aircraft, altp, disa, nei, hld_conf, speed_mode, mass)
+    cg_max_fwd_stall, speed, fn, aoa, ih, c_z, cx_trimmed = h_q.forward_cg_stall(aircraft, altp, disa,
+                                                                                 nei, hld_conf, speed_mode, mass)
 
     c_g.max_fwd_trim_cg = cg_max_fwd_stall         # Forward cg limit
 
