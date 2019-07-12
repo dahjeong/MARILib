@@ -644,7 +644,6 @@ def eval_climb_performances(aircraft):
     """
     Compute climb performances
     """
-
     # Ceilings
     #-------------------------------------------------------------------------
     toc = aircraft.design_driver.top_of_climb_altp
@@ -689,7 +688,6 @@ def eval_performance_analysis(aircraft):
     """
     Compute operational performances
     """
-
     # Nominal mission
     #-------------------------------------------------------------------------
     sub_proc.eval_nominal_mission(aircraft)
