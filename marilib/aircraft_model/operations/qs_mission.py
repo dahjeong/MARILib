@@ -294,7 +294,7 @@ def iso_cas_climb(
     altp_stop = min(altp2, altp_cross_over)
 
     (MTO, MCN, MCL, MCR, FID) = aircraft.propulsion.rating_code
-    nei = 0.
+    nei = 0
 
     # Data filtering
     #-------------------------------------------------------------------------
@@ -385,7 +385,7 @@ def level_flight(
                 1))[0][0]]      # Lower altitude imediatly higher than altp1
 
     (MTO, MCN, MCL, MCR, FID) = aircraft.propulsion.rating_code
-    nei = 0.
+    nei = 0
 
     # Test cruise ceiling
     #-------------------------------------------------------------------------
@@ -553,7 +553,7 @@ def standard_descent(aircraft, altp0, vcas1, altp1, vcas2, mach, flight):
     altp_cross_over = earth.cross_over_altp(vcas2, mach)
 
     (MTO, MCN, MCL, MCR, FID) = aircraft.propulsion.rating_code
-    nei = 0.
+    nei = 0
 
     # Data filtering
     #-------------------------------------------------------------------------
@@ -633,7 +633,7 @@ def qs_mission(aircraft, disa, tow, range, heading,
                vcas2_dsc, altp1_dsc, vcas1_dsc, altp0_dsc, vz_mcr_min, vz_mcl_min):
 
     (MTO, MCN, MCL, MCR, FID) = aircraft.propulsion.rating_code
-    nei = 0.
+    nei = 0
 
     altp_cabin = cabin_virtual_altp()
 

@@ -56,7 +56,7 @@ def eval_propulsion_design(aircraft):
     disa = 15.
     altp = 0.
     mach = 0.25
-    nei = 0.
+    nei = 0
 
     (pamb, tamb, tstd, dtodz) = earth.atmosphere(altp, disa)
 
@@ -68,7 +68,7 @@ def eval_propulsion_design(aircraft):
     disa = aircraft.low_speed.disa_oei
     altp = aircraft.low_speed.req_oei_altp
     mach = 0.5 * aircraft.design_driver.cruise_mach
-    nei = 1.
+    nei = 1
 
     (pamb, tamb, tstd, dtodz) = earth.atmosphere(altp, disa)
 
@@ -79,7 +79,7 @@ def eval_propulsion_design(aircraft):
     disa = 0.
     altp = aircraft.design_driver.ref_cruise_altp
     mach = aircraft.design_driver.cruise_mach
-    nei = 0.
+    nei = 0
 
     (pamb, tamb, tstd, dtodz) = earth.atmosphere(altp, disa)
 
@@ -106,7 +106,7 @@ def eval_propulsion_design(aircraft):
     disa = 0.
     altp = aircraft.design_driver.top_of_climb_altp
     mach = aircraft.design_driver.cruise_mach
-    nei = 0.
+    nei = 0
 
     (pamb, tamb, tstd, dtodz) = earth.atmosphere(altp, disa)
 

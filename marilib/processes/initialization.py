@@ -175,21 +175,21 @@ def vtp_area(wing_area):
 
 
 def hld_conf_clean():
-    hld_conf_clean_i = 0        # By definition (0=<hld_conf=<1)
+    hld_conf_clean_i = 0.0        # By definition (0=<hld_conf=<1)
     return hld_conf_clean_i
 
 #=========================================================================
 
 
 def hld_conf_ld():
-    hld_conf_ld_i = 1       # by definition (0=<hld_conf=<1)
+    hld_conf_ld_i = 1.0       # by definition (0=<hld_conf=<1)
     return hld_conf_ld_i
 
 #=========================================================================
 
 
 def wing_aspect_ratio():
-    wing_aspect_ratio_i = 9
+    wing_aspect_ratio_i = 9.
     return wing_aspect_ratio_i
 
 #=========================================================================
