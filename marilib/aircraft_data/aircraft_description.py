@@ -155,8 +155,8 @@ def get_proper_value(value, obj, key, custom_unit=None):
             return value
     if isnumber:
         if custom_unit is None:
-            if "info" in obj.__dict__:
-                value_unit = obj.info[key]['unit']
+            if "INFO" in obj.__dict__:
+                value_unit = obj.INFO[key]['unit']
             else:
                 return value
         correct_value = unit.convert_from(value_unit, value)
@@ -228,12 +228,11 @@ def write_data_dict(data_dict, out_parser,
                     user_format, info_dict, write_unit, write_om, write_detail):
     if any((write_unit, write_om, write_detail)) is False:
         info_dict = None
-        data_dict.pop("info", None)
+        data_dict.pop("INFO", None)
     elif info_dict is None:
-        info_dict = data_dict.pop("info", None)
+        info_dict = data_dict.pop("INFO", None)
     for key in sorted(data_dict.keys()):
         value = data_dict[key]
-
         if isinstance(value, dict):
             out_parser[key] = {}
             write_data_dict(value,
@@ -261,12 +260,11 @@ def write_ordered_data_dict(data_dict, out_parser,
                             user_format, info_dict, write_unit, write_om, write_detail):
     if any((write_unit, write_om, write_detail)) is False:
         info_dict = None
-        data_dict.pop("info", None)
+        data_dict.pop("INFO", None)
     elif info_dict is None:
-        info_dict = data_dict.pop("info", None)
+        info_dict = data_dict.pop("INFO", None)
     for key in data_dict:
         value = data_dict[key]
-
         if isinstance(value, OrderedDict):
             out_parser[key] = OrderedDict()
             write_ordered_data_dict(value,
