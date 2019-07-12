@@ -11,6 +11,7 @@ from marilib import numpy
 import warnings
 from numpy.linalg import solve
 from numpy.linalg.linalg import LinAlgError
+import marilib
 
 #=========================================================================
 
@@ -197,6 +198,7 @@ def approx_jac(res, y, args=(), step=1e-7):
 
 
 def get_approx_func(res, args=(), step=1e-6):
+    if marilib.is_using_autograd:
     def apprx(y, *args):
         return approx_jac(res, y, args, step)
     return apprx
