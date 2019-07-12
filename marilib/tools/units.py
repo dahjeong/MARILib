@@ -8,6 +8,7 @@ Created on Thu Jan 24 23:22:21 2019
 """
 
 from marilib import numpy
+from copy import deepcopy
 
 
 def s_min(min): return min * 60.   # Translate minutes into seconds
@@ -517,6 +518,7 @@ def convert_from(ulab, val):
         return None
     if isinstance(val, list):
         return [convert_from(ulab, v) for v in val]
+        dic_val = deepcopy(val)
     return val * UNIT[ulab]
 
 
@@ -526,4 +528,5 @@ def convert_to(ulab, val):
         return None
     if isinstance(val, list):
         return [convert_to(ulab, v) for v in val]
+        dic_val = deepcopy(val)
     return val / UNIT[ulab]
