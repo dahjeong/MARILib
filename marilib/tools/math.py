@@ -132,10 +132,8 @@ def newton_solve(res_func, y_0, dres_dy=None, args=(),
         raise ValueError("res_max too small (%g <= 0)" % res_max)
     if max_iter < 1:
         raise ValueError("max_iter must be greater than 0")
-#     if force_ad:
-#         dres_dy = jacobian(res_func)
     elif dres_dy is None:
-        dres_dy = get_approx_func(res_func, args)
+        res_func, dres_dy = get_jac_func(res_func, args)
 
     k = 0
     y_curr = numpy.atleast_1d(1.0 * y_0)
@@ -144,7 +142,7 @@ def newton_solve(res_func, y_0, dres_dy=None, args=(),
     n0 = norm(curr_res)
     if n0 == 0.:
         return y_curr, n0, 1
-    if not any(dres_dy):
+    if not any(dres_dy(*myargs)):
         msg = "jacobian was zero."
         warnings.warn(msg, RuntimeWarning)
         return y_curr, n0, 1
@@ -159,8 +157,6 @@ def newton_solve(res_func, y_0, dres_dy=None, args=(),
         curr_res = res_func(*myargs)
         stop_crit = norm(curr_res) / n0
         k += 1
-#     print "k end ", k
-#     print stop_crit
     if k == max_iter and stop_crit > res_max:
         raise LinAlgError("Failed to converge Newton solver")
     return y_curr, stop_crit, k
@@ -197,8 +193,27 @@ def approx_jac(res, y, args=(), step=1e-7):
     return jac
 
 
-def get_approx_func(res, args=(), step=1e-6):
+def get_jac_func(res, args=(), step=1e-6):
     if marilib.is_using_autograd:
+        from autograd import jacobian
+        from autograd.numpy.numpy_boxes import ArrayBox
+        jac = jacobian(res, argnum=0)
+
+        def j_func(*args):
+            val = jac(*args)
+            if isinstance(val, numpy.ndarray):
+                return val
+            if isinstance(val, ArrayBox):
+                return val._value
+
+        def my_res(*args):
+            val = res(*args)
+            if isinstance(val, numpy.ndarray):
+                return val
+            if isinstance(val, ArrayBox):
+                return val._value
+        return my_res, j_func
+
     def apprx(y, *args):
         return approx_jac(res, y, args, step)
-    return apprx
+    return res, apprx
