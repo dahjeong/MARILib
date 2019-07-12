@@ -7,8 +7,8 @@ Created on Thu Jan 24 23:22:21 2019
 
 """
 from collections import OrderedDict
-
 from datetime import datetime
+import itertools
 
 from configobj import ConfigObj
 
@@ -193,6 +193,8 @@ def set_ac_data(data_dict, obj, has_custom_units):
                 attr_val = attr_val[0]
             else:
                 attr_val = tuple(attr_val)
+                elif initial_char == '{':
+                    attr_val = dict(itertools.izip(k, attr_val))
             setattr(obj, attr_path, attr_val)
 
 #------------------------------------------------------------------------------
