@@ -11,28 +11,23 @@ from datetime import datetime
 import itertools
 
 from configobj import ConfigObj
-
-from marilib.tools import units as unit
-
 from numpy import max, ceil, log10, floor, float64, arange, abs, array, ndarray
 
 from marilib.aircraft_data.operational_performances \
     import DesignDriver, LowSpeed, HighSpeed, MaxPayloadMission, \
     NominalMission, MaxFuelMission, ZeroPayloadMission, \
     CostMission, Economics, Environmental_Impact
-
 from marilib.aircraft_data.physical_performances \
     import Aerodynamics, Propulsion, CharacteristicWeight, CenterOfGravity
-
 from marilib.airplane.airframe.airframe_data \
     import Cabin, Payload, Fuselage, Wing, Tanks, LandingGears, \
     Systems, HorizontalTail, VerticalTail
-
-from marilib.airplane.propulsion.turbofan.turbofan_data \
-    import TurbofanPylon, TurbofanNacelle, TurbofanEngine
-
 from marilib.airplane.propulsion.hybrid_pte1.hybrid_pte1_data \
     import PowerElectricChain, Battery, ElectricNacelle, ElectricEngine
+from marilib.airplane.propulsion.turbofan.turbofan_data \
+    import TurbofanPylon, TurbofanNacelle, TurbofanEngine
+from marilib.tools import units as unit
+
 
 STANDARD_FORMAT = 4
 
