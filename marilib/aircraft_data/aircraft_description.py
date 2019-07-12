@@ -178,8 +178,21 @@ def set_ac_data(data_dict, obj, has_custom_units):
             custom_unit = None
             if has_custom_units:
                 custom_unit = data_line[-1]
-            if value_sequence[0][0] == '[':
-                value_sequence = data_line[0][1:-1].replace(",", "").split()
+            initial_char = value_sequence[0][0]
+            isnumpyarray = False
+            if initial_char in ('(', '['):
+                if ',' not in value_sequence[0]:
+                    isnumpyarray = True
+                    value_sequence = data_line[0][1:-1].split()
+                else:
+                    value_sequence = data_line[0][1:- 1].replace(",",
+                                                                 "").split()
+            elif initial_char == '{':
+                value_sequence = data_line[0][1:- 1].replace(",",
+                                                             "").replace(":",
+                                                                         " ").split()
+                k = value_sequence[0::2]
+                value_sequence = value_sequence[1::2]
             attr_val = []
             for v in value_sequence:
                 v = get_proper_value(v, obj, attr_path, custom_unit)
@@ -187,7 +200,10 @@ def set_ac_data(data_dict, obj, has_custom_units):
             if len(attr_val) is 1:
                 attr_val = attr_val[0]
             else:
-                attr_val = tuple(attr_val)
+                if isnumpyarray:
+                    attr_val = array(attr_val)
+                elif initial_char == '(':
+                    attr_val = tuple(attr_val)
                 elif initial_char == '{':
                     attr_val = dict(itertools.izip(k, attr_val))
             setattr(obj, attr_path, attr_val)
@@ -312,6 +328,10 @@ def to_user_format(value, dec_format):
         for i in arange(len(lst)):
             lst[i] = to_user_format(lst[i], dec_format)
         return str(convert_to_orig_type(lst, value)).replace("'", "")
+    elif isinstance(value, dict):
+        for k, v in value.iteritems():
+            value[k] = to_user_format(v, dec_format)
+        return str(value).replace("'", "")
     elif isinstance(value, (float, float64)):
         if value == 0. or value == -0.:
             return format(value, "".join((".", str(dec_format), "f")))
