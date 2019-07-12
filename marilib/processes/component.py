@@ -276,7 +276,7 @@ def eval_landing_performances(aircraft):
     altp = aircraft.low_speed.altp_app_speed
     disa = aircraft.low_speed.disa_app_speed
     mass = aircraft.weights.mlw
-    hld_conf_ld = aircraft.aerodynamics.hld_conf_to
+    hld_conf_ld = aircraft.aerodynamics.hld_conf_ld
 
     app_speed = perfo.approach_speed(aircraft, altp, disa, mass, hld_conf_ld)
 
