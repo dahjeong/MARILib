@@ -518,19 +518,35 @@ UNIT["dict"] = 1
 
 def convert_from(ulab, val):
     # Convert val expressed in ulab to corresponding standard unit
-    if val is None:
-        return None
+    if isinstance(val, (type(None), str)):
+        return val
     if isinstance(val, list):
-        return [convert_from(ulab, v) for v in val]
+        return [convert_to(ulab, v) for v in val]
+    if isinstance(val, tuple):
+        return (convert_to(ulab, v) for v in val)
+    if isinstance(val, numpy.ndarray):
+        return numpy.array([convert_to(ulab, v) for v in val])
+    if isinstance(val, dict):
         dic_val = deepcopy(val)
+        for k, v in dic_val.iteritems():
+            dic_val[k] = dic_val.iteritems()
+        return dic_val
     return val * UNIT[ulab]
 
 
 def convert_to(ulab, val):
     # Convert val expressed in standard unit to ulab
-    if val is None:
-        return None
+    if isinstance(val, (type(None), str)):
+        return val
     if isinstance(val, list):
         return [convert_to(ulab, v) for v in val]
+    if isinstance(val, tuple):
+        return tuple([convert_to(ulab, v) for v in val])
+    if isinstance(val, numpy.ndarray):
+        return numpy.array([convert_to(ulab, v) for v in val])
+    if isinstance(val, dict):
         dic_val = deepcopy(val)
+        for k, v in dic_val.iteritems():
+            dic_val[k] = convert_to(ulab, v)
+        return dic_val
     return val / UNIT[ulab]
