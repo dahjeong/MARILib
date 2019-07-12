@@ -180,6 +180,9 @@ UNIT["lb"] = 0.4535924
 UNIT["lbm"] = 0.4535924
 UNIT["t"] = 1000.
 
+# dim = "MassIndex"
+UNIT["g/kg"] = 1.
+
 # dim = "MasstoForceratio"
 UNIT["kg/N"] = 1.
 UNIT["g/N"] = 0.001
@@ -507,6 +510,7 @@ UNIT["1e-12.K/m2/km/year"] = 1.e-12
 
 # dim = "DataStructure"
 UNIT["structure"] = 1
+UNIT["dict"] = 1
 
 # Conversion functions
 #-------------------------------------------------------------------------
