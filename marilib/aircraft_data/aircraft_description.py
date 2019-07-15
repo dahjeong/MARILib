@@ -105,8 +105,6 @@ class Aircraft(object):
         Build  ini file :
             Data tree file
             :param filename: Output file path - default value "Aircraft.ini"
-            :param def_order: parameters' order - default value True for class definition order
-                                                  alternative value False for alphabetical order
             :param user_format: parameters' value format - default value True or 4 for 4 decimals format
                                                            disable option with False or -1
             :param write_unit: Boolean to write the unit after the variable's value - default value False
