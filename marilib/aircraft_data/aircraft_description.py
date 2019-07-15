@@ -117,18 +117,19 @@ class Aircraft(object):
 
         # check python version
         if (sys.version_info > (3, 0)):  # using Python 3 or above
+            print "******* Using python 3.x *******"
             data_dict = self.get_data_dict()
-            write_data_dict(data_dict, out_parser,
-                            user_format, None, write_unit, write_om, write_detail)
+            new_dict = {}
         else:  # using Python 2
-
+            print "******* Using python 2.x *******"
             data_dict = self.get_ordered_data_dict()
-            write_ordered_data_dict(data_dict, out_parser,
-                                    user_format, None, write_unit, write_om, write_detail)
-
+            new_dict = OrderedDict()
         class_name = self.__class__.__name__
         ac_dict = data_dict[class_name]
+        out_parser[class_name] = deepcopy(new_dict)
         ac_out_parser = out_parser[class_name]
+        write_data_dict(self, new_dict, ac_dict, ac_out_parser,
+                        user_format, write_unit, write_om, write_detail)
         timenow = datetime.now()
         date_hour = str(timenow.strftime("%d-%m-%Y %H:%M:%S"))
         out_parser.initial_comment = ["MARILib configuration file",
