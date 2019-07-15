@@ -149,7 +149,7 @@ class Aircraft(object):
 #------------------------------------------------------------------------------
 
 
-def get_proper_value(value, obj, key, declared_unit):
+def get_proper_value(value, key, declared_unit):
     is_negative = False
     isnumber = False
     if isinstance(value, str):
@@ -205,7 +205,7 @@ def set_ac_data(data_dict, obj):
                 value_sequence = value_sequence[1::2]
             attr_val = []
             for v in value_sequence:
-                v = get_proper_value(v, obj, attr_path, unit)
+                v = get_proper_value(v, attr_path, assigned_unit)
                 attr_val.append(v)
             if len(attr_val) is 1:
                 attr_val = attr_val[0]
