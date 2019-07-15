@@ -102,7 +102,7 @@ def geometry_coupling(aircraft):
 
 def propulsion(aircraft):
     """
-    @constants : [rating_factor,rating_code,architecture]
+    @constants : [rating_factor,rating_code,architecture,fuel_type]
     """
     eval_propulsion_design(aircraft)
 
@@ -111,7 +111,7 @@ def propulsion(aircraft):
 
 def aircraft_aerodynamics(aircraft):
     """
-    @constants : [rating_factor,rating_code,architecture]
+    @constants : [rating_factor,rating_code,architecture,fuel_type]
     """
     eval_aerodynamics_design(aircraft)
 
@@ -120,7 +120,7 @@ def aircraft_aerodynamics(aircraft):
 
 def aircraft_mass(aircraft):
     """
-    @constants : [rating_factor,rating_code,architecture]
+    @constants : [rating_factor,rating_code,architecture,fuel_type]
     """
     eval_mass_breakdown(aircraft)
 
@@ -129,7 +129,7 @@ def aircraft_mass(aircraft):
 
 def mass_coupling(aircraft):
     """
-    @constants : [rating_factor,rating_code,architecture]
+    @constants : [rating_factor,rating_code,architecture,fuel_type]
     """
     eval_mass_coupling(aircraft)
 
@@ -138,7 +138,7 @@ def mass_coupling(aircraft):
 
 def nominal_mission(aircraft):
     """
-    @constants : [rating_factor,rating_code,architecture]
+    @constants : [rating_factor,rating_code,architecture,fuel_type]
     """
     eval_nominal_mission(aircraft)
 
@@ -153,7 +153,7 @@ def mission_coupling(aircraft):
 
 def climb_performances(aircraft):
     """
-    @constants : [rating_factor,rating_code,architecture]
+    @constants : [rating_factor,rating_code,architecture,fuel_type]
     """
     eval_climb_performances(aircraft)
 
@@ -162,7 +162,7 @@ def climb_performances(aircraft):
 
 def low_speed_performances(aircraft):
     """
-    @constants : [rating_factor,rating_code,architecture]
+    @constants : [rating_factor,rating_code,architecture,fuel_type]
     """
     eval_take_off_performances(aircraft)
     eval_landing_performances(aircraft)
@@ -172,7 +172,7 @@ def low_speed_performances(aircraft):
 
 def co2_metric(aircraft):
     """
-    @constants : [rating_factor,rating_code,architecture]
+    @constants : [rating_factor,rating_code,architecture,fuel_type]
     """
     eval_co2_metric(aircraft)
 
@@ -181,7 +181,7 @@ def co2_metric(aircraft):
 
 def economics(aircraft):
     """
-    @constants : [rating_factor,rating_code,architecture]
+    @constants : [rating_factor,rating_code,architecture,fuel_type]
     """
     eval_cost_mission(aircraft)
     eval_economics(aircraft)
@@ -191,7 +191,7 @@ def economics(aircraft):
 
 def payload_range_analysis(aircraft):
     """
-    @constants : [rating_factor,rating_code,architecture]
+    @constants : [rating_factor,rating_code,architecture,fuel_type]
     """
     eval_payload_range_analysis(aircraft)
 
