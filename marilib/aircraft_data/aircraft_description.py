@@ -187,7 +187,9 @@ def set_ac_data(data_dict, obj):
         else:
             data_line = attr_val.rsplit(None, 1)
             value_sequence = [data_line[0]]
-            unit = data_line[-1]
+            assigned_unit = data_line[-1]
+            if len(data_line) < 2 or assigned_unit[-1] in (']', '}', ')'):
+                assigned_unit = None
             initial_char = value_sequence[0][0]
             isnumpyarray = False
             if initial_char in ('(', '['):
