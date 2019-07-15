@@ -14,17 +14,17 @@ class DesignDriver(object):
     """
     Top level design drivers
     """
+    INFO = {
+        "design_range": {"unit": "NM", "om": 1.e3, "txt": "Range of design mission"},
+        "cruise_mach": {"unit": "mach", "om": 1.e0, "txt": "Nominal cruise Mach number"},
+        "ref_cruise_altp": {"unit": "ft", "om": 1.e4, "txt": "Reference cruise altitude (generally 35000ft)"},
+        "top_of_climb_altp": {"unit": "ft", "om": 1.e4, "txt": "Top of climb altitude (may be lower or equal to reference cruise altitude"}
+    }
 
     def __init__(self, design_range=None,
                  cruise_mach=None,
                  ref_cruise_altp=None,
                  top_of_climb_altp=None):
-        self.INFO = {
-            "design_range": {"unit": "NM", "om": 1.e3, "txt": "Range of design mission"},
-            "cruise_mach": {"unit": "mach", "om": 1.e0, "txt": "Nominal cruise Mach number"},
-            "ref_cruise_altp": {"unit": "ft", "om": 1.e4, "txt": "Reference cruise altitude (generally 35000ft)"},
-            "top_of_climb_altp": {"unit": "ft", "om": 1.e4, "txt": "Top of climb altitude (may be lower or equal to reference cruise altitude"}
-        }
         self.design_range = design_range
         self.cruise_mach = cruise_mach
         self.ref_cruise_altp = ref_cruise_altp
@@ -36,6 +36,29 @@ class LowSpeed(object):
     """
     Low speed performance data
     """
+    INFO = {
+        "disa_tofl": {"unit": "degK", "om": 1.e1, "txt": "Temperature shift for take off field length computation"},
+        "altp_tofl": {"unit": "ft", "om": 1.e4, "txt": "Altitude for take off field length computation"},
+        "kvs1g_tofl": {"unit": "no_dim", "om": 1.e0, "txt": "Minimum allowed stall speed margin at take off"},
+        "req_tofl": {"unit": "m", "om": 1.e3, "txt": "Maximum take off field length at MTOW and given conditions"},
+        "eff_tofl": {"unit": "m", "om": 1.e3, "txt": "Effective take off field length at MTOW and given condition"},
+        "eff_kvs1g": {"unit": "no_dim", "om": 1.e0, "txt": "Effective stall speed margin at take off"},
+        "seg2_path": {"unit": "no_dim", "om": 1.e-1, "txt": "Air path at 35 ft at take off"},
+        "limitation": {"unit": "int", "om": 1.e0, "txt": "Active limitation, 0: error, 1: field length, 2: min climb path"},
+        "perfo_constraint_1": {"unit": "m", "om": 1.e0, "txt": "Constraint on Take Off Field Length, must be kept positive"},
+        "disa_app_speed": {"unit": "degK", "om": 1.e1, "txt": "Temperature shift for approach speed computation"},
+        "altp_app_speed": {"unit": "ft", "om": 1.e3, "txt": "Altitude for approach speed computation"},
+        "kvs1g_app_speed": {"unit": "no_dim", "om": 1.e0, "txt": "Minimum allowed stall speed margin at landing"},
+        "req_app_speed": {"unit": "kt", "om": 1.e2, "txt": "Maximum approach speed at MLW and given conditions"},
+        "eff_app_speed": {"unit": "kt", "om": 1.e2, "txt": "Effective approach speed at MLW and given condition"},
+        "perfo_constraint_2": {"unit": "m", "om": 1.e0, "txt": "Constraint on Approach Speed, must be kept positive"},
+        "disa_oei": {"unit": "degK", "om": 1.e1, "txt": "Temperature shift for One Engine Inoperative (OEI)"},
+        "req_oei_altp": {"unit": "ft", "om": 1.e4, "txt": "Required One Engine Inoperative (OEI) minimum altitude"},
+        "req_oei_path": {"unit": "%", "om": 1.e-1, "txt": "Required minimum slope OEI at 95%MTOW, required altitude and MCN rating"},
+        "eff_oei_path": {"unit": "%", "om": 1.e-1, "txt": "Effective slope OEI at 95%MTOW, required altitude and MCN rating"},
+        "oei_best_speed": {"unit": "kt", "om": 1.e2, "txt": "Calibrated Air Speed (CAS) at which slope is maximum in given conditions"},
+        "perfo_constraint_3": {"unit": "%", "om": 1.e-1, "txt": "Constraint on One Engine Inoperative performance, must be kept positive"}
+    }
 
     def __init__(self, disa_tofl=None,
                  altp_tofl=None,
@@ -58,29 +81,6 @@ class LowSpeed(object):
                  eff_oei_path=None,
                  oei_best_speed=None,
                  perfo_constraint_3=None):
-        self.INFO = {
-            "disa_tofl": {"unit": "degK", "om": 1.e1, "txt": "Temperature shift for take off field length computation"},
-            "altp_tofl": {"unit": "ft", "om": 1.e4, "txt": "Altitude for take off field length computation"},
-            "kvs1g_tofl": {"unit": "no_dim", "om": 1.e0, "txt": "Minimum allowed stall speed margin at take off"},
-            "req_tofl": {"unit": "m", "om": 1.e3, "txt": "Maximum take off field length at MTOW and given conditions"},
-            "eff_tofl": {"unit": "m", "om": 1.e3, "txt": "Effective take off field length at MTOW and given condition"},
-            "eff_kvs1g": {"unit": "no_dim", "om": 1.e0, "txt": "Effective stall speed margin at take off"},
-            "seg2_path": {"unit": "no_dim", "om": 1.e-1, "txt": "Air path at 35 ft at take off"},
-            "limitation": {"unit": "int", "om": 1.e0, "txt": "Active limitation, 0: error, 1: field length, 2: min climb path"},
-            "perfo_constraint_1": {"unit": "m", "om": 1.e0, "txt": "Constraint on Take Off Field Length, must be kept positive"},
-            "disa_app_speed": {"unit": "degK", "om": 1.e1, "txt": "Temperature shift for approach speed computation"},
-            "altp_app_speed": {"unit": "ft", "om": 1.e3, "txt": "Altitude for approach speed computation"},
-            "kvs1g_app_speed": {"unit": "no_dim", "om": 1.e0, "txt": "Minimum allowed stall speed margin at landing"},
-            "req_app_speed": {"unit": "kt", "om": 1.e2, "txt": "Maximum approach speed at MLW and given conditions"},
-            "eff_app_speed": {"unit": "kt", "om": 1.e2, "txt": "Effective approach speed at MLW and given condition"},
-            "perfo_constraint_2": {"unit": "m", "om": 1.e0, "txt": "Constraint on Approach Speed, must be kept positive"},
-            "disa_oei": {"unit": "degK", "om": 1.e1, "txt": "Temperature shift for One Engine Inoperative (OEI)"},
-            "req_oei_altp": {"unit": "ft", "om": 1.e4, "txt": "Required One Engine Inoperative (OEI) minimum altitude"},
-            "req_oei_path": {"unit": "%", "om": 1.e-1, "txt": "Required minimum slope OEI at 95%MTOW, required altitude and MCN rating"},
-            "eff_oei_path": {"unit": "%", "om": 1.e-1, "txt": "Effective slope OEI at 95%MTOW, required altitude and MCN rating"},
-            "oei_best_speed": {"unit": "kt", "om": 1.e2, "txt": "Calibrated Air Speed (CAS) at which slope is maximum in given conditions"},
-            "perfo_constraint_3": {"unit": "%", "om": 1.e-1, "txt": "Constraint on One Engine Inoperative performance, must be kept positive"}
-        }
         self.disa_tofl = disa_tofl
         self.altp_tofl = altp_tofl
         self.kvs1g_tofl = kvs1g_tofl
@@ -110,6 +110,23 @@ class HighSpeed(object):
     """
     High speed performance data
     """
+    INFO = {
+        "disa_climb": {"unit": "degK", "om": 1.e1, "txt": "Temperature shift for Maximum climb speed computation"},
+        "req_vz_climb": {"unit": "ft/min", "om": 1.e2, "txt": "Required minimum climb speed at 97%MTOW, nominal initial cruise altitude and MCL rating"},
+        "eff_vz_climb": {"unit": "ft/min", "om": 1.e2, "txt": "Effective climb speed at 97%MTOW, nominal initial cruise altitude and MCL rating"},
+        "perfo_constraint_1": {"unit": "ft/min", "om": 1.e0, "txt": "Constraint on climb performance with MCL rating, must be kept positive"},
+        "req_vz_cruise": {"unit": "ft/min", "om": 1.e2, "txt": "Required minimum climb speed at 97%MTOW, nominal initial cruise altitude and MCR rating"},
+        "eff_vz_cruise": {"unit": "ft/min", "om": 1.e2, "txt": "Effective climb speed at 97%MTOW, nominal initial cruise altitude and MCR rating"},
+        "perfo_constraint_2": {"unit": "ft/min", "om": 1.e0, "txt": "Constraint on climb performance with MCR rating, must be kept positive"},
+        "req_toc_altp": {"unit": "ft", "om": 1.e4, "txt": "Targeted Top Of Climb Altitude (TOC) for Time To Climb (TTC) computation"},
+        "cas1_ttc": {"unit": "kt", "om": 1.e2, "txt": "Calibrated Air Speed (CAS) below 10000ft for TTC computation"},
+        "cas2_ttc": {"unit": "kt", "om": 1.e2, "txt": "Calibrated Air Speed (CAS) above 10000ft for TTC computation"},
+        "req_ttc": {"unit": "min", "om": 1.e1, "txt": "Required maximum Time To Climb"},
+        "eff_ttc": {"unit": "min", "om": 1.e1, "txt": "Effective Time To Climb"},
+        "perfo_constraint_3": {"unit": "min", "om": 1.e0, "txt": "Constraint on time to climb, must be kept positive"},
+        "cruise_sfc": {"unit": "kg/daN/h", "om": 1.e0, "txt": "Specific fuel consumption for nominal mission cruise"},
+        "cruise_lod": {"unit": "no_dim", "om": 1.e1, "txt": "Lift over drag ratio for nominal mission cruise"}
+    }
 
     def __init__(self, disa_climb=None,
                  req_vz_climb=None,
@@ -126,23 +143,6 @@ class HighSpeed(object):
                  perfo_constraint_3=None,
                  cruise_sfc=None,
                  cruise_lod=None):
-        self.INFO = {
-            "disa_climb": {"unit": "degK", "om": 1.e1, "txt": "Temperature shift for Maximum climb speed computation"},
-            "req_vz_climb": {"unit": "ft/min", "om": 1.e2, "txt": "Required minimum climb speed at 97%MTOW, nominal initial cruise altitude and MCL rating"},
-            "eff_vz_climb": {"unit": "ft/min", "om": 1.e2, "txt": "Effective climb speed at 97%MTOW, nominal initial cruise altitude and MCL rating"},
-            "perfo_constraint_1": {"unit": "ft/min", "om": 1.e0, "txt": "Constraint on climb performance with MCL rating, must be kept positive"},
-            "req_vz_cruise": {"unit": "ft/min", "om": 1.e2, "txt": "Required minimum climb speed at 97%MTOW, nominal initial cruise altitude and MCR rating"},
-            "eff_vz_cruise": {"unit": "ft/min", "om": 1.e2, "txt": "Effective climb speed at 97%MTOW, nominal initial cruise altitude and MCR rating"},
-            "perfo_constraint_2": {"unit": "ft/min", "om": 1.e0, "txt": "Constraint on climb performance with MCR rating, must be kept positive"},
-            "req_toc_altp": {"unit": "ft", "om": 1.e4, "txt": "Targeted Top Of Climb Altitude (TOC) for Time To Climb (TTC) computation"},
-            "cas1_ttc": {"unit": "kt", "om": 1.e2, "txt": "Calibrated Air Speed (CAS) below 10000ft for TTC computation"},
-            "cas2_ttc": {"unit": "kt", "om": 1.e2, "txt": "Calibrated Air Speed (CAS) above 10000ft for TTC computation"},
-            "req_ttc": {"unit": "min", "om": 1.e1, "txt": "Required maximum Time To Climb"},
-            "eff_ttc": {"unit": "min", "om": 1.e1, "txt": "Effective Time To Climb"},
-            "perfo_constraint_3": {"unit": "min", "om": 1.e0, "txt": "Constraint on time to climb, must be kept positive"},
-            "cruise_sfc": {"unit": "kg/daN/h", "om": 1.e0, "txt": "Specific fuel consumption for nominal mission cruise"},
-            "cruise_lod": {"unit": "no_dim", "om": 1.e1, "txt": "Lift over drag ratio for nominal mission cruise"}
-        }
         self.disa_climb = disa_climb
         self.req_vz_climb = req_vz_climb
         self.eff_vz_climb = eff_vz_climb
@@ -166,6 +166,14 @@ class MaxPayloadMission(object):
     """
     Max payload mission data
     """
+    INFO = {
+        "range": {"unit": "NM", "om": 1.e3, "txt": "Range of the max payload mission"},
+        "payload": {"unit": "kg", "om": 1.e4, "txt": "Payload of the max payload mission"},
+        "tow": {"unit": "kg", "om": 1.e4, "txt": "Take off weight of the max payload mission"},
+        "total_fuel": {"unit": "kg", "om": 1.e4, "txt": "Total fuel of the max payload mission"},
+        "block_fuel": {"unit": "kg", "om": 1.e4, "txt": "Block fuel of the max payload mission"},
+        "block_time": {"unit": "h", "om": 1.e1, "txt": "Block time of the max payload mission"}
+    }
 
     def __init__(self, range=None,
                  payload=None,
@@ -173,14 +181,6 @@ class MaxPayloadMission(object):
                  total_fuel=None,
                  block_fuel=None,
                  block_time=None):
-        self.INFO = {
-            "range": {"unit": "NM", "om": 1.e3, "txt": "Range of the max payload mission"},
-            "payload": {"unit": "kg", "om": 1.e4, "txt": "Payload of the max payload mission"},
-            "tow": {"unit": "kg", "om": 1.e4, "txt": "Take off weight of the max payload mission"},
-            "total_fuel": {"unit": "kg", "om": 1.e4, "txt": "Total fuel of the max payload mission"},
-            "block_fuel": {"unit": "kg", "om": 1.e4, "txt": "Block fuel of the max payload mission"},
-            "block_time": {"unit": "h", "om": 1.e1, "txt": "Block time of the max payload mission"}
-        }
         self.range = range
         self.payload = payload
         self.tow = tow
@@ -195,6 +195,14 @@ class NominalMission(object):
     """
     Nominal mission data
     """
+    INFO = {
+        "range": {"unit": "NM", "om": 1.e3, "txt": "Range of the nominal mission"},
+        "payload": {"unit": "kg", "om": 1.e4, "txt": "Payload of the nominal mission"},
+        "tow": {"unit": "kg", "om": 1.e4, "txt": "Take off weight of the nominal mission"},
+        "total_fuel": {"unit": "kg", "om": 1.e4, "txt": "Total fuel of the nominal mission"},
+        "block_fuel": {"unit": "kg", "om": 1.e4, "txt": "Block fuel of the nominal mission"},
+        "block_time": {"unit": "h", "om": 1.e1, "txt": "Block time of the nominal mission"}
+    }
 
     def __init__(self, range=None,
                  payload=None,
@@ -202,14 +210,7 @@ class NominalMission(object):
                  total_fuel=None,
                  block_fuel=None,
                  block_time=None):
-        self.INFO = {
-            "range": {"unit": "NM", "om": 1.e3, "txt": "Range of the nominal mission"},
-            "payload": {"unit": "kg", "om": 1.e4, "txt": "Payload of the nominal mission"},
-            "tow": {"unit": "kg", "om": 1.e4, "txt": "Take off weight of the nominal mission"},
-            "total_fuel": {"unit": "kg", "om": 1.e4, "txt": "Total fuel of the nominal mission"},
-            "block_fuel": {"unit": "kg", "om": 1.e4, "txt": "Block fuel of the nominal mission"},
-            "block_time": {"unit": "h", "om": 1.e1, "txt": "Block time of the nominal mission"}
-        }
+
         self.range = range
         self.payload = payload
         self.tow = tow
@@ -224,6 +225,14 @@ class MaxFuelMission(object):
     """
     Max fuel mission data
     """
+    INFO = {
+        "range": {"unit": "NM", "om": 1.e3, "txt": "Range of the max fuel mission"},
+        "payload": {"unit": "kg", "om": 1.e4, "txt": "Payload of the max fuel mission"},
+        "tow": {"unit": "kg", "om": 1.e4, "txt": "Take off weight of the max fuel mission"},
+        "total_fuel": {"unit": "kg", "om": 1.e4, "txt": "Total fuel of the max fuel mission"},
+        "block_fuel": {"unit": "kg", "om": 1.e4, "txt": "Block fuel of the max fuel mission"},
+        "block_time": {"unit": "h", "om": 1.e1, "txt": "Block time of the max fuel mission"}
+    }
 
     def __init__(self, range=None,
                  payload=None,
@@ -231,14 +240,6 @@ class MaxFuelMission(object):
                  total_fuel=None,
                  block_fuel=None,
                  block_time=None):
-        self.INFO = {
-            "range": {"unit": "NM", "om": 1.e3, "txt": "Range of the max fuel mission"},
-            "payload": {"unit": "kg", "om": 1.e4, "txt": "Payload of the max fuel mission"},
-            "tow": {"unit": "kg", "om": 1.e4, "txt": "Take off weight of the max fuel mission"},
-            "total_fuel": {"unit": "kg", "om": 1.e4, "txt": "Total fuel of the max fuel mission"},
-            "block_fuel": {"unit": "kg", "om": 1.e4, "txt": "Block fuel of the max fuel mission"},
-            "block_time": {"unit": "h", "om": 1.e1, "txt": "Block time of the max fuel mission"}
-        }
         self.range = range
         self.payload = payload
         self.tow = tow
@@ -253,19 +254,19 @@ class ZeroPayloadMission(object):
     """
     Zero payload mission data
     """
+    INFO = {
+        "range": {"unit": "NM", "om": 1.e3, "txt": "Range of the zero payload mission"},
+        "tow": {"unit": "kg", "om": 1.e4, "txt": "Take off weight of the zero payload mission"},
+        "total_fuel": {"unit": "kg", "om": 1.e4, "txt": "Total fuel of the zero payload mission"},
+        "block_fuel": {"unit": "kg", "om": 1.e4, "txt": "Block fuel of the zero payload mission"},
+        "block_time": {"unit": "h", "om": 1.e1, "txt": "Block time of the zero payload mission"}
+    }
 
     def __init__(self, range=None,
                  tow=None,
                  total_fuel=None,
                  block_fuel=None,
                  block_time=None):
-        self.INFO = {
-            "range": {"unit": "NM", "om": 1.e3, "txt": "Range of the zero payload mission"},
-            "tow": {"unit": "kg", "om": 1.e4, "txt": "Take off weight of the zero payload mission"},
-            "total_fuel": {"unit": "kg", "om": 1.e4, "txt": "Total fuel of the zero payload mission"},
-            "block_fuel": {"unit": "kg", "om": 1.e4, "txt": "Block fuel of the zero payload mission"},
-            "block_time": {"unit": "h", "om": 1.e1, "txt": "Block time of the zero payload mission"}
-        }
         self.range = range
         self.tow = tow
         self.total_fuel = total_fuel
@@ -279,6 +280,16 @@ class CostMission(object):
     """
     Mission data for cost evaluation
     """
+    INFO = {
+        "disa": {"unit": "degK", "om": 1.e1, "txt": "Temperature shift of the cost evaluation mission"},
+        "range": {"unit": "NM", "om": 1.e3, "txt": "Range of the cost evaluation mission"},
+        "payload": {"unit": "kg", "om": 1.e4, "txt": "Payload of the cost evaluation mission"},
+        "tow": {"unit": "kg", "om": 1.e4, "txt": "Take off weight of the cost evaluation mission"},
+        "total_fuel": {"unit": "kg", "om": 1.e4, "txt": "Total fuel of the cost evaluation mission"},
+        "block_fuel": {"unit": "kg", "om": 1.e4, "txt": "Block fuel of the cost evaluation mission"},
+        "block_time": {"unit": "h", "om": 1.e1, "txt": "Block time of the cost evaluation mission"},
+        "block_CO2": {"unit": "kg", "om": 1.e4, "txt": "Mass of carbon dioxide emitted during the mission"}
+    }
 
     def __init__(self, disa=None,
                  range=None,
@@ -288,16 +299,6 @@ class CostMission(object):
                  block_fuel=None,
                  block_time=None,
                  block_CO2=None):
-        self.INFO = {
-            "disa": {"unit": "degK", "om": 1.e1, "txt": "Temperature shift of the cost evaluation mission"},
-            "range": {"unit": "NM", "om": 1.e3, "txt": "Range of the cost evaluation mission"},
-            "payload": {"unit": "kg", "om": 1.e4, "txt": "Payload of the cost evaluation mission"},
-            "tow": {"unit": "kg", "om": 1.e4, "txt": "Take off weight of the cost evaluation mission"},
-            "total_fuel": {"unit": "kg", "om": 1.e4, "txt": "Total fuel of the cost evaluation mission"},
-            "block_fuel": {"unit": "kg", "om": 1.e4, "txt": "Block fuel of the cost evaluation mission"},
-            "block_time": {"unit": "h", "om": 1.e1, "txt": "Block time of the cost evaluation mission"},
-            "block_CO2": {"unit": "kg", "om": 1.e4, "txt": "Mass of carbon dioxide emitted during the mission"}
-        }
         self.disa = disa
         self.range = range
         self.payload = payload
@@ -314,6 +315,36 @@ class Economics(object):
     """
     Cost data
     """
+    INFO = {
+        "gear_price": {"unit": "M$", "om": 1.e1, "txt": "Price of landing gears"},
+        "engine_price": {"unit": "M$", "om": 1.e1, "txt": "Price of one engine"},
+        "airplane_price": {"unit": "M$", "om": 1.e1, "txt": "Price of the airplane"},
+        "battery_price": {"unit": "k$", "om": 1.e1, "txt": "Total price of the battery (eventual)"},
+        "battery_mass_price": {"unit": "$/kg", "om": 1.e1, "txt": "Mass price of battery (eventual)"},
+        "fuel_price": {"unit": "$/gal", "om": 1.e1, "txt": "Fuel price"},
+        "elec_price": {"unit": "$/kWh", "om": 1.e-1, "txt": "Price of electricity"},
+        "labor_cost": {"unit": "$/h", "om": 1.e1, "txt": "Labor cost"},
+        "irp": {"unit": "year", "om": 1.e1, "txt": "Interest recovery period"},
+        "period": {"unit": "year", "om": 1.e1, "txt": "Utilisation period"},
+        "interest_rate": {"unit": "%", "om": 1.e1, "txt": "Interest rate"},
+        "utilisation": {"unit": "int", "om": 1.e3, "txt": "Number of flights per year"},
+        "cockpit_crew_cost": {"unit": "$/trip", "om": 1.e3, "txt": "Cockpit crew cost"},
+        "cabin_crew_cost": {"unit": "$/trip", "om": 1.e3, "txt": "Cabin crew cost"},
+        "fuel_cost": {"unit": "$/trip", "om": 1.e3, "txt": "Fuel cost"},
+        "elec_cost": {"unit": "$/trip", "om": 1.e3, "txt": "Cost of electricity"},
+        "landing_fees": {"unit": "$/trip", "om": 1.e3, "txt": "Landing fees"},
+        "navigation_fees": {"unit": "$/trip", "om": 1.e3, "txt": "Navigation fees"},
+        "catering_cost": {"unit": "$/trip", "om": 1.e3, "txt": "Catering cost"},
+        "pax_handling_cost": {"unit": "$/trip", "om": 1.e3, "txt": "Pax handling cost"},
+        "ramp_handling_cost": {"unit": "$/trip", "om": 1.e3, "txt": "Ramp handling cost"},
+        "standard_operating_cost": {"unit": "$/trip", "om": 1.e4, "txt": "Standard operating cost"},
+        "cash_operating_cost": {"unit": "$/trip", "om": 1.e4, "txt": "Cash operating cost"},
+        "total_investment": {"unit": "$/trip", "om": 1.e3, "txt": "Total investment"},
+        "interest": {"unit": "$/trip", "om": 1.e3, "txt": "Interest"},
+        "insurance": {"unit": "$/trip", "om": 1.e3, "txt": "Insurance"},
+        "depreciation": {"unit": "$/trip", "om": 1.e3, "txt": "Depreciation"},
+        "direct_operating_cost": {"unit": "$/trip", "om": 1.e4, "txt": "Direct operating cost"}
+    }
 
     def __init__(self, gear_price=None,
                  engine_price=None,
@@ -343,36 +374,6 @@ class Economics(object):
                  insurance=None,
                  depreciation=None,
                  direct_operating_cost=None):
-        self.INFO = {
-            "gear_price": {"unit": "M$", "om": 1.e1, "txt": "Price of landing gears"},
-            "engine_price": {"unit": "M$", "om": 1.e1, "txt": "Price of one engine"},
-            "airplane_price": {"unit": "M$", "om": 1.e1, "txt": "Price of the airplane"},
-            "battery_price": {"unit": "k$", "om": 1.e1, "txt": "Total price of the battery (eventual)"},
-            "battery_mass_price": {"unit": "$/kg", "om": 1.e1, "txt": "Mass price of battery (eventual)"},
-            "fuel_price": {"unit": "$/gal", "om": 1.e1, "txt": "Fuel price"},
-            "elec_price": {"unit": "$/kWh", "om": 1.e-1, "txt": "Price of electricity"},
-            "labor_cost": {"unit": "$/h", "om": 1.e1, "txt": "Labor cost"},
-            "irp": {"unit": "year", "om": 1.e1, "txt": "Interest recovery period"},
-            "period": {"unit": "year", "om": 1.e1, "txt": "Utilisation period"},
-            "interest_rate": {"unit": "%", "om": 1.e1, "txt": "Interest rate"},
-            "utilisation": {"unit": "int", "om": 1.e3, "txt": "Number of flights per year"},
-            "cockpit_crew_cost": {"unit": "$/trip", "om": 1.e3, "txt": "Cockpit crew cost"},
-            "cabin_crew_cost": {"unit": "$/trip", "om": 1.e3, "txt": "Cabin crew cost"},
-            "fuel_cost": {"unit": "$/trip", "om": 1.e3, "txt": "Fuel cost"},
-            "elec_cost": {"unit": "$/trip", "om": 1.e3, "txt": "Cost of electricity"},
-            "landing_fees": {"unit": "$/trip", "om": 1.e3, "txt": "Landing fees"},
-            "navigation_fees": {"unit": "$/trip", "om": 1.e3, "txt": "Navigation fees"},
-            "catering_cost": {"unit": "$/trip", "om": 1.e3, "txt": "Catering cost"},
-            "pax_handling_cost": {"unit": "$/trip", "om": 1.e3, "txt": "Pax handling cost"},
-            "ramp_handling_cost": {"unit": "$/trip", "om": 1.e3, "txt": "Ramp handling cost"},
-            "standard_operating_cost": {"unit": "$/trip", "om": 1.e4, "txt": "Standard operating cost"},
-            "cash_operating_cost": {"unit": "$/trip", "om": 1.e4, "txt": "Cash operating cost"},
-            "total_investment": {"unit": "$/trip", "om": 1.e3, "txt": "Total investment"},
-            "interest": {"unit": "$/trip", "om": 1.e3, "txt": "Interest"},
-            "insurance": {"unit": "$/trip", "om": 1.e3, "txt": "Insurance"},
-            "depreciation": {"unit": "$/trip", "om": 1.e3, "txt": "Depreciation"},
-            "direct_operating_cost": {"unit": "$/trip", "om": 1.e4, "txt": "Direct operating cost"}
-        }
         self.gear_price = gear_price
         self.engine_price = engine_price
         self.airplane_price = airplane_price
@@ -409,6 +410,20 @@ class Environmental_Impact(object):
     """
     Environmental impact data
     """
+    INFO = {
+        "rgf": {"unit": "m2", "om": 1.e2, "txt": "Reference Geometric Factor, close to cabin floor pressurized area (but higher)"},
+        "CO2_metric": {"unit": "kg/km/m0.48", "om": 1.e0, "txt": "Fuel efficiency metric"},
+        "CO2_index": {"unit": "g/kg", "om": 1.e3, "txt": "Mass of carbon dioxide emitted per kg of fuel"},
+        "H2O_index": {"unit": "g/kg", "om": 1.e3, "txt": "Mass of water emitted per kg of fuel"},
+        "SO2_index": {"unit": "g/kg", "om": 1.e3, "txt": "Mass of sulfur dioxide emitted per kg of fuel"},
+        "NOx_index": {"unit": "g/kg", "om": 1.e3, "txt": "Mass of nitrogen oxide emitted per kg of fuel"},
+        "CO_index": {"unit": "g/kg", "om": 1.e3, "txt": "Mass of carbon monoxide emitted per kg of fuel"},
+        "HC_index": {"unit": "g/kg", "om": 1.e3, "txt": "Mass of unburnt hydrocarbon emitted per kg of fuel"},
+        "sulphuric_acid_index": {"unit": "g/kg", "om": 1.e3, "txt": "Mass of sulfuric acid emitted per kg of fuel"},
+        "nitrous_acid_index": {"unit": "g/kg", "om": 1.e3, "txt": "Mass of nitrous acid emitted per kg of fuel"},
+        "nitric_acid_index": {"unit": "g/kg", "om": 1.e3, "txt": "Mass of nitric acid emitted per kg of fuel"},
+        "soot_index": {"unit": "int", "om": 1.e12, "txt": "Number of soot particle emitted per kg of fuel"}
+    }
 
     def __init__(self, rgf=None,
                  CO2_metric=None,
@@ -422,20 +437,6 @@ class Environmental_Impact(object):
                  nitrous_acid_index=None,
                  nitric_acid_index=None,
                  soot_index=None):
-        self.INFO = {
-            "rgf": {"unit": "m2", "om": 1.e2, "txt": "Reference Geometric Factor, close to cabin floor pressurized area (but higher)"},
-            "CO2_metric": {"unit": "kg/km/m0.48", "om": 1.e0, "txt": "Fuel efficiency metric"},
-            "CO2_index": {"unit": "g/kg", "om": 1.e3, "txt": "Mass of carbon dioxide emitted per kg of fuel"},
-            "H2O_index": {"unit": "g/kg", "om": 1.e3, "txt": "Mass of water emitted per kg of fuel"},
-            "SO2_index": {"unit": "g/kg", "om": 1.e3, "txt": "Mass of sulfur dioxide emitted per kg of fuel"},
-            "NOx_index": {"unit": "g/kg", "om": 1.e3, "txt": "Mass of nitrogen oxide emitted per kg of fuel"},
-            "CO_index": {"unit": "g/kg", "om": 1.e3, "txt": "Mass of carbon monoxide emitted per kg of fuel"},
-            "HC_index": {"unit": "g/kg", "om": 1.e3, "txt": "Mass of unburnt hydrocarbon emitted per kg of fuel"},
-            "sulphuric_acid_index": {"unit": "g/kg", "om": 1.e3, "txt": "Mass of sulfuric acid emitted per kg of fuel"},
-            "nitrous_acid_index": {"unit": "g/kg", "om": 1.e3, "txt": "Mass of nitrous acid emitted per kg of fuel"},
-            "nitric_acid_index": {"unit": "g/kg", "om": 1.e3, "txt": "Mass of nitric acid emitted per kg of fuel"},
-            "soot_index": {"unit": "int", "om": 1.e12, "txt": "Number of soot particle emitted per kg of fuel"}
-        }
         self.rgf = rgf
         self.CO2_metric = CO2_metric
         self.CO2_index = CO2_index

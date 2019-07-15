@@ -14,13 +14,12 @@ from marilib.airplane.propulsion import jet_models as jet
 from marilib.airplane.propulsion.turbofan.turbofan_models import turbofan_thrust
 from marilib.airplane.propulsion.hybrid_pte1.hybrid_pte1_models import pte1_thrust
 from marilib.airplane.propulsion.hybrid_pte1 import hybrid_pte1_models as hybrid
-from marilib.airplane.propulsion.hybrid_pte1.hybrid_pte1_models import hybrid_thrust
 from marilib.airplane.propulsion.turbofan.turbofan_models import turbofan_thrust
 from marilib.earth import environment as earth
 from marilib.tools.math import lin_interp_1d, newton_solve
 
 
-#===========================================================================================================
+#=========================================================================
 def eval_pte1_engine_design(aircraft):
     """
     Thermal propulsive architecture design
@@ -57,11 +56,10 @@ def eval_pte1_engine_design(aircraft):
     fd_mach = {"MTO": 0.25, "MCN": crm / 2, "MCL": crm, "MCR": crm, "FID": crm}
     fd_nei = {"MTO": 0., "MCN": 1., "MCL": 0., "MCR": 0., "FID": 0.}
 
-    e_engine.flight_data = {
-        "disa": fd_disa,
-        "altp": fd_altp,
-        "mach": fd_mach,
-        "nei": fd_nei}
+    e_engine.flight_data = {"disa": fd_disa,
+                            "altp": fd_altp,
+                            "mach": fd_mach,
+                            "nei": fd_nei}
 
     e_fan_power = {"MTO": power_elec.mto,
                    "MCN": power_elec.mcn,
@@ -162,9 +160,8 @@ def eval_pte1_engine_design(aircraft):
     return
 
 
-#===========================================================================================================
+#=========================================================================
 def eval_pte1_nacelle_design(aircraft):
->>>>>>> develop
     """
     Hybrid propulsive architecture design
     """
@@ -245,7 +242,14 @@ def eval_pte1_nacelle_design(aircraft):
     body_length = fuselage.length
     body_width = fuselage.width
 
-    eval_pte1_bli_nacelle_design(e_nacelle,Pamb,Tamb,Mach,shaft_power,hub_width,body_length,body_width)
+    eval_pte1_bli_nacelle_design(e_nacelle,
+                                 Pamb,
+                                 Tamb,
+                                 Mach,
+                                 shaft_power,
+                                 hub_width,
+                                 body_length,
+                                 body_width)
 
     e_nacelle.x_axe = fuselage.length + 0.2 * e_nacelle.width
     e_nacelle.y_axe = 0.
@@ -264,9 +268,15 @@ def eval_pte1_nacelle_design(aircraft):
         mach = fd.get("mach")[rating]
         nei = fd.get("nei")[rating]
 
-        (Pamb,Tamb,Tstd,dTodZ) = earth.atmosphere(altp,disa)
-        (fn,sec,data) = pte1_thrust(aircraft,Pamb,Tamb,mach,rating,nei)
-        (fn_core,fn_fan1,fn_fan2,dVbli_o_V,shaft_power2,fn0,shaft_power0) = data
+        (Pamb, Tamb, Tstd, dTodZ) = earth.atmosphere(altp, disa)
+        (fn, sec, data) = pte1_thrust(aircraft, Pamb, Tamb, mach, rating, nei)
+        (fn_core,
+         fn_fan1,
+         fn_fan2,
+         dVbli_o_V,
+         shaft_power2,
+         fn0,
+         shaft_power0) = data
 
         e_fan_thrust[rating] = fn_fan2
 
@@ -329,8 +339,9 @@ def resize_boundary_layer(body_width, hub_width):
     return body_bnd_layer
 
 
-#===========================================================================================================
-def eval_pte1_bli_nacelle_design(this_nacelle,Pamb,Tamb,Mach,shaft_power,hub_width,body_length,body_width):
+#=========================================================================
+def eval_pte1_bli_nacelle_design(this_nacelle, Pamb, Tamb, Mach, shaft_power,
+                                 hub_width, body_length, body_width):
     """
     BLI nacelle design
     """
@@ -458,7 +469,7 @@ def eval_pte1_bli_nacelle_design(this_nacelle,Pamb,Tamb,Mach,shaft_power,hub_wid
     return
 
 
-#===========================================================================================================
+#=========================================================================
 def eval_pte1_nacelle_mass(aircraft):
     """
     Hybridized propulsive nacelle mass estimations
@@ -518,7 +529,7 @@ def eval_pte1_nacelle_mass(aircraft):
     return
 
 
-#===========================================================================================================
+#=========================================================================
 def eval_pte1_battery_mass(aircraft):
     """
     Battery predesign
@@ -534,21 +545,23 @@ def eval_pte1_battery_mass(aircraft):
 
     battery.c_g = fuselage.c_g
 
-    if (battery.strategy==1):
-        battery.mass = (battery.power_feed*battery.time_feed + battery.energy_cruise)/battery.energy_density
+    if (battery.strategy == 1):
+        battery.mass = (battery.power_feed * battery.time_feed +
+                        battery.energy_cruise) / battery.energy_density
         propulsion.battery_energy_density = battery.energy_density
         weights.battery = battery.mass
         c_o_g.battery = battery.c_g
 
-    elif (battery.strategy==2):
+    elif (battery.strategy == 2):
 
-        battery.energy_cruise = max(0.,battery.mass*battery.energy_density - battery.power_feed*battery.time_feed)
+        battery.energy_cruise = max(0.,
+                                    battery.mass * battery.energy_density -
+                                    battery.power_feed * battery.time_feed)
         propulsion.battery_energy_density = battery.energy_density
         weights.battery = battery.mass
         c_o_g.battery = battery.c_g
 
     else:
         raise Exception("battery.strategy index is out of range")
-
 
     return

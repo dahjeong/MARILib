@@ -82,6 +82,29 @@ class RearElectricNacelle(object):
     """
     Electric nacelle data
     """
+    INFO = {
+        "width": {"unit": "m", "om": 1.e0, "txt": "Maximum width of the electric fan cowl"},
+        "length": {"unit": "m", "om": 1.e0, "txt": "Length of the electric fan cowl"},
+        "x_axe": {"unit": "m", "om": 1.e1, "txt": "Longitudinal position of the center of the electric nacelle air inlet"},
+        "y_axe": {"unit": "m", "om": 1.e1, "txt": "Span wise position of the center of the electric nacelle air inlet"},
+        "z_axe": {"unit": "m", "om": 1.e0, "txt": "Vertical position of the center of the electric nacelle air inlet"},
+        "net_wetted_area": {"unit": "m2", "om": 1.e1, "txt": "Total net wetted area of the electric fan nacelle (fan cowl)"},
+        "efficiency_fan": {"unit": "no_dim", "om": 1.e0, "txt": "Fan efficiency for turbofan (capability to turn shaft power into kinetic energy)"},
+        "efficiency_prop": {"unit": "no_dim", "om": 1.e0, "txt": "Propeller like Fan+Cowl efficiency for turbofan (FanThrust.Vair)/(Shaft power)"},
+        "motor_efficiency": {"unit": "no_dim", "om": 1.e0, "txt": "Motor efficiency"},
+        "controller_efficiency": {"unit": "no_dim", "om": 1.e0, "txt": "Controller electric efficiency"},
+        "controller_pw_density": {"unit": "kW/kg", "om": 1.e0, "txt": "Power density of controller"},
+        "motor_pw_density": {"unit": "kW/kg", "om": 1.e0, "txt": "Power density of electric motor"},
+        "nacelle_pw_density": {"unit": "kW/kg", "om": 1.e0, "txt": "Power density of e-fan nacelle and mountings"},
+        "hub_width": {"unit": "m", "om": 1.e0, "txt": "Diameter of the hub of the electric nacelle"},
+        "fan_width": {"unit": "m", "om": 1.e0, "txt": "Diameter of the fan of the electric nacelle"},
+        "nozzle_width": {"unit": "m", "om": 1.e0, "txt": "Diameter of the nozzle of the electric nacelle"},
+        "nozzle_area": {"unit": "m2", "om": 1.e0, "txt": "Exhaust nozzle area of the electric nacelle"},
+        "body_length": {"unit": "m", "om": 1.e0, "txt": "Length of the body behind the electric nacelle"},
+        "bnd_layer": {"unit": "structure", "om": 1.e0, "txt": "Boundary layer thickness law in front of the e-fan, 2d array"},
+        "mass": {"unit": "kg", "om": 1.e2, "txt": "Equipped mass of the nacelle of the electric fan (including the controller, motor and nacelle)"},
+        "c_g": {"unit": "m", "om": 1.e1, "txt": "Longitudinal position of the CG of the electric nacelle"}
+    }
 
     def __init__(self, width=None,
                  length=None,
@@ -104,29 +127,6 @@ class RearElectricNacelle(object):
                  bnd_layer=None,
                  mass=None,
                  c_g=None):
-        self.INFO = {
-            "width": {"unit": "m", "om": 1.e0, "txt": "Maximum width of the electric fan cowl"},
-            "length": {"unit": "m", "om": 1.e0, "txt": "Length of the electric fan cowl"},
-            "x_axe": {"unit": "m", "om": 1.e1, "txt": "Longitudinal position of the center of the electric nacelle air inlet"},
-            "y_axe": {"unit": "m", "om": 1.e1, "txt": "Span wise position of the center of the electric nacelle air inlet"},
-            "z_axe": {"unit": "m", "om": 1.e0, "txt": "Vertical position of the center of the electric nacelle air inlet"},
-            "net_wetted_area": {"unit": "m2", "om": 1.e1, "txt": "Total net wetted area of the electric fan nacelle (fan cowl)"},
-            "efficiency_fan": {"unit": "no_dim", "om": 1.e0, "txt": "Fan efficiency for turbofan (capability to turn shaft power into kinetic energy)"},
-            "efficiency_prop": {"unit": "no_dim", "om": 1.e0, "txt": "Propeller like Fan+Cowl efficiency for turbofan (FanThrust.Vair)/(Shaft power)"},
-            "motor_efficiency": {"unit": "no_dim", "om": 1.e0, "txt": "Motor efficiency"},
-            "controller_efficiency": {"unit": "no_dim", "om": 1.e0, "txt": "Controller electric efficiency"},
-            "controller_pw_density": {"unit": "kW/kg", "om": 1.e0, "txt": "Power density of controller"},
-            "motor_pw_density": {"unit": "kW/kg", "om": 1.e0, "txt": "Power density of electric motor"},
-            "nacelle_pw_density": {"unit": "kW/kg", "om": 1.e0, "txt": "Power density of e-fan nacelle and mountings"},
-            "hub_width": {"unit": "m", "om": 1.e0, "txt": "Diameter of the hub of the electric nacelle"},
-            "fan_width": {"unit": "m", "om": 1.e0, "txt": "Diameter of the fan of the electric nacelle"},
-            "nozzle_width": {"unit": "m", "om": 1.e0, "txt": "Diameter of the nozzle of the electric nacelle"},
-            "nozzle_area": {"unit": "m2", "om": 1.e0, "txt": "Exhaust nozzle area of the electric nacelle"},
-            "body_length": {"unit": "m", "om": 1.e0, "txt": "Length of the body behind the electric nacelle"},
-            "bnd_layer": {"unit": "structure", "om": 1.e0, "txt": "Boundary layer thickness law in front of the e-fan, 2d array"},
-            "mass": {"unit": "kg", "om": 1.e2, "txt": "Equipped mass of the nacelle of the electric fan (including the controller, motor and nacelle)"},
-            "c_g": {"unit": "m", "om": 1.e1, "txt": "Longitudinal position of the CG of the electric nacelle"}
-        }
         self.width = width
         self.length = length
         self.x_axe = x_axe
@@ -160,7 +160,7 @@ class RearElectricEngine(object):
         "mto_e_shaft_power": {"unit": "kW", "om": 1.e3, "txt": "E-fan shaft power in take off rating (one engine), Sea Level, ISA+15, Mach 0,25"},
         "mto_e_fan_thrust": {"unit": "daN", "om": 1.e3, "txt": "E-fan thrust in take off rating (one engine), Sea Level, ISA+15, Mach 0,25"},
         "mcn_e_shaft_power": {"unit": "kW", "om": 1.e3, "txt": "E-fan shaft power in maxi continuous rating (one engine), required ceiling altitude, ISA, cruise Mach"},
-        "mcn_e_fan_thrust ": {"unit": "daN", "om": 1.e3, "txt": "E-fan thrust in maxi continuous rating (one engine), required ceiling altitude, ISA, cruise Mach"},
+        "mcn_e_fan_thrust": {"unit": "daN", "om": 1.e3, "txt": "E-fan thrust in maxi continuous rating (one engine), required ceiling altitude, ISA, cruise Mach"},
         "mcl_e_shaft_power": {"unit": "kW", "om": 1.e3, "txt": "E-fan shaft power in max climb rating (one engine), required Top of Climb altitude, ISA, cruise Mach"},
         "mcl_e_fan_thrust": {"unit": "daN", "om": 1.e3, "txt": "E-fan thrust in max climb rating (one engine), required Top of Climb altitude, ISA, cruise Mach"},
         "mcr_e_shaft_power": {"unit": "kW", "om": 1.e3, "txt": "E-fan shaft power in max cruise rating (one engine), reference cruise altitude, ISA, cruise Mach"},
@@ -202,6 +202,16 @@ class Pte1Battery(object):
     """
     Battery data
     """
+    INFO = {
+        "strategy": {"unit": "int", "om": 1.e0, "txt": "Battery sizing strategy, 1: power_feed & energy_cruise driven, 2: battery mass driven"},
+        "power_feed": {"unit": "kW", "om": 1.e4, "txt": "Power delivered to e-fan(s) at take off and(or) climb during a total of time_feed"},
+        "time_feed": {"unit": "min", "om": 1.e1, "txt": "Maximum duration of the power_feed delivered to e-fan(s)"},
+        "energy_cruise": {"unit": "kWh", "om": 1.e1, "txt": "Total battery energy dedicated to cruise"},
+        "energy_density": {"unit": "kWh/kg", "om": 1.e0, "txt": "Battery energy density"},
+        "power_density": {"unit": "kW/kg", "om": 1.e0, "txt": "Battery power density (capability to release power per mass unit"},
+        "mass": {"unit": "kg", "om": 1.e3, "txt": "Total battery mass"},
+        "c_g": {"unit": "m", "om": 1.e1, "txt": "Global CG of batteries"}
+    }
 
     def __init__(self, strategy=None,
                  power_feed=None,
@@ -211,16 +221,6 @@ class Pte1Battery(object):
                  power_density=None,
                  mass=None,
                  c_g=None):
-        self.INFO = {
-            "strategy": {"unit": "int", "om": 1.e0, "txt": "Battery sizing strategy, 1: power_feed & energy_cruise driven, 2: battery mass driven"},
-            "power_feed": {"unit": "kW", "om": 1.e4, "txt": "Power delivered to e-fan(s) at take off and(or) climb during a total of time_feed"},
-            "time_feed": {"unit": "min", "om": 1.e1, "txt": "Maximum duration of the power_feed delivered to e-fan(s)"},
-            "energy_cruise": {"unit": "kWh", "om": 1.e1, "txt": "Total battery energy dedicated to cruise"},
-            "energy_density": {"unit": "kWh/kg", "om": 1.e0, "txt": "Battery energy density"},
-            "power_density": {"unit": "kW/kg", "om": 1.e0, "txt": "Battery power density (capability to release power per mass unit"},
-            "mass": {"unit": "kg", "om": 1.e3, "txt": "Total battery mass"},
-            "c_g": {"unit": "m", "om": 1.e1, "txt": "Global CG of batteries"}
-        }
         self.strategy = strategy
         self.power_feed = power_feed
         self.time_feed = time_feed
