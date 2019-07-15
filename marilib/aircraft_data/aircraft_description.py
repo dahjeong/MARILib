@@ -221,8 +221,8 @@ def set_ac_data(data_dict, obj):
 #------------------------------------------------------------------------------
 
 
-def write_data_line(value, key, out_parser, user_format, info_dict,
-                    write_unit, write_om, write_detail):
+def write_data_line(value, key, out_parser, info_dict,
+                    user_format, write_unit, write_om, write_detail):
     unit_str = ""
     comment_line = ""
     comment_inline = False
