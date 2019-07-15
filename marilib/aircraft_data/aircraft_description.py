@@ -94,7 +94,8 @@ class Aircraft(object):
             self, filename="Aircraft.ini"):
 
         in_parser = ConfigObj(filename, indent_type="    ")
-        data_dict = in_parser["Aircraft"]
+        class_name = self.__class__.__name__
+        data_dict = in_parser[class_name]
         set_ac_data(data_dict, self)
 
     def export_to_file(self, filename="Aircraft.ini",
@@ -127,6 +128,9 @@ class Aircraft(object):
             write_ordered_data_dict(data_dict, out_parser,
                                     user_format, None, write_unit, write_om, write_detail)
 
+        class_name = self.__class__.__name__
+        ac_dict = data_dict[class_name]
+        ac_out_parser = out_parser[class_name]
         timenow = datetime.now()
         date_hour = str(timenow.strftime("%d-%m-%Y %H:%M:%S"))
         out_parser.initial_comment = ["MARILib configuration file",
@@ -135,10 +139,12 @@ class Aircraft(object):
         out_parser.write()
 
     def get_data_dict(self):
-        return get_data_dict(self, "Aircraft", {})
+        class_name = self.__class__.__name__
+        return get_data_dict(self, class_name, {})
 
     def get_ordered_data_dict(self):
-        return get_ordered_data_dict(self, "Aircraft", OrderedDict())
+        class_name = self.__class__.__name__
+        return get_ordered_data_dict(self, class_name, OrderedDict())
 
 
 #------------------------------------------------------------------------------
