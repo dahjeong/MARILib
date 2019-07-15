@@ -250,66 +250,23 @@ def write_data_line(value, key, out_parser, user_format, info_dict,
         out_parser.inline_comments[key] = comment_line
 
 
-def write_data_dict(data_dict, out_parser,
-                    user_format, info_dict, write_unit, write_om, write_detail):
-    if any((write_unit, write_om, write_detail)) is False:
-        info_dict = None
-        data_dict.pop("INFO", None)
-    elif info_dict is None:
-        info_dict = data_dict.pop("INFO", None)
-    for key in data_dict.keys():
-        value = data_dict[key]
-        if isinstance(value, dict):
-            out_parser[key] = {}
-            write_data_dict(value,
-                            out_parser[key],
-                            user_format,
-                            info_dict,
-                            write_unit,
-                            write_om,
-                            write_detail)
-
+def write_data_dict(obj, my_dict, data_dict, out_parser,
+                    user_format, write_unit, write_om, write_detail):
+    info_dict = None
+    if hasattr(obj, "INFO") and any((write_unit, write_om, write_detail)):
+        info_dict = obj.INFO
+    dict_type = type(my_dict)
+    for key, value in data_dict.iteritems():
+        subobj = getattr(obj, key)
+        if isinstance(value, dict_type):
+            new_dict = deepcopy(my_dict)
+            out_parser[key] = new_dict
+            write_data_dict(subobj, my_dict, value, out_parser[key],
+                            user_format, write_unit, write_om, write_detail)
         else:
-            write_data_line(value,
-                            key,
-                            out_parser,
-                            user_format,
-                            info_dict,
-                            write_unit,
-                            write_om,
-                            write_detail)
+            write_data_line(value, key, out_parser, info_dict,
+                            user_format, write_unit, write_om, write_detail)
 
-
-#------------------------------------------------------------------------------
-
-def write_ordered_data_dict(data_dict, out_parser,
-                            user_format, info_dict, write_unit, write_om, write_detail):
-    if any((write_unit, write_om, write_detail)) is False:
-        info_dict = None
-        data_dict.pop("INFO", None)
-    elif info_dict is None:
-        info_dict = data_dict.pop("INFO", None)
-    for key in data_dict:
-        value = data_dict[key]
-        if isinstance(value, OrderedDict):
-            out_parser[key] = OrderedDict()
-            write_ordered_data_dict(value,
-                                    out_parser[key],
-                                    user_format,
-                                    info_dict,
-                                    write_unit,
-                                    write_om,
-                                    write_detail)
-
-        else:
-            write_data_line(value,
-                            key,
-                            out_parser,
-                            user_format,
-                            info_dict,
-                            write_unit,
-                            write_om,
-                            write_detail)
 
 #-------------------------------------------------------------------------
 
