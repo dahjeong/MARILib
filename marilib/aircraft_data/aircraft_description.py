@@ -99,7 +99,7 @@ class Aircraft(object):
         set_ac_data(data_dict, self)
 
     def export_to_file(self, filename="Aircraft.ini",
-                       user_format=STANDARD_FORMAT, write_unit=False,
+                       user_format=STANDARD_FORMAT, write_unit=True,
                        write_om=False, write_detail=False):
         """
         Build  ini file :
