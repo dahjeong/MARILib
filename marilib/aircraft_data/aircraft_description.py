@@ -171,6 +171,9 @@ def get_proper_value(value, key, declared_unit):
         else:
             return value
     if isnumber:
+        if declared_unit is None:
+            raise IOError(
+                "Read config file error: numeric variable without unit")
         converted_value = unit.convert_from(declared_unit, value)
         return converted_value
     else:
