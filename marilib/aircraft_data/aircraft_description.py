@@ -9,7 +9,7 @@ Created on Thu Jan 24 23:22:21 2019
 from collections import OrderedDict
 from datetime import datetime
 import itertools
-import sys
+from copy import deepcopy
 
 
 from configobj import ConfigObj
@@ -32,6 +32,7 @@ from marilib.airplane.propulsion.electric_ef1.electric_ef1_data \
     import Ef1PowerElectricChain, Ef1Battery, ElectrofanPylon, ElectrofanNacelle, ElectrofanEngine
 from marilib.tools import units as unit
 
+import sys
 
 STANDARD_FORMAT = 4
 
