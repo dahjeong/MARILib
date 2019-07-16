@@ -304,7 +304,7 @@ def eval_tail_statistical_sizing(aircraft):
 
     x_ini = numpy.array([htp_area_i, vtp_area_i])
 
-    fct_arg = (aircraft)
+    fct_arg = (aircraft,)
 
     result, _, _ = newton_solve(fct_aircraft_pre_design,
                                 x_ini,  # dres_dy=jac,
@@ -361,7 +361,7 @@ def eval_aircraft_pre_design(aircraft):
     x_ini = numpy.array(
         [aircraft.turbofan_nacelle.width, aircraft.turbofan_nacelle.y_ext])
 
-    fct_arg = (aircraft)
+    fct_arg = (aircraft,)
 
     result, _, _ = newton_solve(fct_aircraft_pre_design,
                                 x_ini,  # dres_dy=jac,
@@ -418,7 +418,7 @@ def eval_aircraft_statistical_pre_design(aircraft):
 
     x_ini = numpy.array([htp_area_i, vtp_area_i])
 
-    fct_arg = (aircraft)
+    fct_arg = (aircraft,)
     result, _, _ = newton_solve(fct_aircraft_pre_design,
                                 x_ini,  # dres_dy=jac,
                                 args=fct_arg)
@@ -471,7 +471,7 @@ def eval_aircraft_statistical_pre_design_2(aircraft):
     x_ini = numpy.array(
         [aircraft.turbofan_nacelle.width, aircraft.turbofan_nacelle.y_ext])
 
-    fct_arg = (aircraft)
+    fct_arg = (aircraft,)
 
     result, _, _ = newton_solve(fct_aircraft_statistical_pre_design,
                                 x_ini,  # dres_dy=jac,
@@ -544,7 +544,7 @@ def eval_mass_estimation(aircraft):
     x_ini = numpy.array([aircraft.weights.mlw,
                          aircraft.weights.mzfw])
 
-    fct_arg = (aircraft)
+    fct_arg = (aircraft,)
 
     result, _, _ = newton_solve(fct_mass,
                                 x_ini,  # dres_dy=jac,
@@ -594,7 +594,7 @@ def eval_mass_mission_adaptation(aircraft):
                          aircraft.weights.mlw,
                          aircraft.weights.mzfw])
 
-    fct_arg = (aircraft)
+    fct_arg = (aircraft,)
 
     result, _, _ = newton_solve(fct_mass_mission,
                                 x_ini,  # dres_dy=jac,
@@ -851,7 +851,7 @@ def eval_hq0(aircraft):
                          aircraft.horizontal_tail.area,
                          aircraft.vertical_tail.area])
 
-    fct_arg = (aircraft)
+    fct_arg = (aircraft,)
 
     result, _, _ = newton_solve(fct_hq_optim,
                                 x_ini,  # dres_dy=jac,
@@ -958,7 +958,7 @@ def eval_mda3(aircraft):
                          aircraft.horizontal_tail.area,
                          aircraft.vertical_tail.area])
 
-    fct_arg = (aircraft)
+    fct_arg = (aircraft,)
 
     result, _, _ = newton_solve(fct_hq_optim,
                                 x_ini,  # dres_dy=jac,
