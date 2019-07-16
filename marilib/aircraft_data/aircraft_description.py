@@ -90,8 +90,7 @@ class Aircraft(object):
         self.ef1_power_elec_chain = Ef1PowerElectricChain()
         self.ef1_battery = Ef1Battery()
 
-    def import_from_file(
-            self, filename="Aircraft.ini"):
+    def import_from_file(self, filename="Aircraft.ini"):
 
         in_parser = ConfigObj(filename, indent_type="    ")
         class_name = self.__class__.__name__
