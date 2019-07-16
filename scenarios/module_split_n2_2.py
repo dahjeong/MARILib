@@ -215,7 +215,7 @@ if __name__ == "__main__":
     design_range = unit.m_NM(3000)      # Design range
     cruise_mach = 0.78                  # Nominal cruise mach number
 
-    propu_config = 1    # 1: turbofan, 2: partial turbo electric
+    propu_config = "TF"    # 'TF': turbofan, 'PTE1': partial turbo electric
     n_engine = 2        # Number of engine
 
     aircraft_initialization(aircraft,
