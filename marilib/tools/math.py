@@ -142,7 +142,7 @@ def newton_solve(res_func, y_0, dres_dy=None, args=(),
     n0 = norm(curr_res)
     if n0 == 0.:
         return y_curr, n0, 1
-    if not any(dres_dy(*myargs)):
+    if not numpy.any(dres_dy(*myargs)):
         msg = "jacobian was zero."
         warnings.warn(msg, RuntimeWarning)
         return y_curr, n0, 1
